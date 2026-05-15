@@ -292,7 +292,7 @@ export default function Projects() {
 
   ) : (
 
-    projects.map((project) => (
+    projects.map((project, index) => (
 
                 <motion.div
 
