@@ -1,3 +1,4 @@
+import Profile from "./pages/Profile";
 import {
   BrowserRouter,
   Routes,
@@ -19,6 +20,11 @@ function App() {
     <BrowserRouter>
 
       <Routes>
+
+        <Route
+  path="/profile"
+  element={<Profile />}
+/>
 
         <Route
           path="/"

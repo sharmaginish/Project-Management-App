@@ -1,134 +1,90 @@
+import Sidebar from "../components/Sidebar";
+
 import {
   PieChart,
   Pie,
-  Tooltip,
-  Cell
+  Cell,
+  Tooltip
 } from "recharts";
 
 import { motion } from "framer-motion";
 
-import Navbar from "../components/Navbar";
-import ProjectSection from "../components/ProjectSection";
-import TaskSection from "../components/TaskSection";
-
-import { useEffect,useState } from "react";
-
-import axios from "axios";
-
 export default function Dashboard(){
 
-  const [tasks,setTasks] = useState([]);
-
-  const token = localStorage.getItem("token");
-
-  useEffect(() => {
-    fetchTasks();
-  },[]);
-
-  const fetchTasks = async () => {
-
-    try{
-
-      const res = await axios.get(
-        "https://project-management-app-jtoh.onrender.com/api/tasks",
-        {
-          headers:{
-            Authorization:`Bearer ${token}`
-          }
-        }
-      );
-
-      setTasks(res.data);
-
-    }catch(err){
-
-      console.log(err);
-
-    }
-
-  };
-
-  const completed = tasks.filter(
-    t => t.status === "Completed"
-  ).length;
-
-  const pending = tasks.filter(
-    t => t.status === "Pending"
-  ).length;
+  const role = localStorage.getItem("role");
 
   const data = [
-    {
-      name:"Completed",
-      value:completed
-    },
-    {
-      name:"Pending",
-      value:pending
-    }
-  ];
-
-  const COLORS = [
-    "#ffffff",
-    "#555555"
+    {name:"Completed",value:80},
+    {name:"Pending",value:20}
   ];
 
   return (
 
-    <div className="min-h-screen bg-black text-white">
+    <div className="bg-[#0f172a] min-h-screen text-white">
 
-      <Navbar />
+      <Sidebar />
 
-      <div className="p-8">
+      <div className="ml-72 p-10">
 
-        <motion.h1
+        <motion.div
           initial={{opacity:0,y:-20}}
           animate={{opacity:1,y:0}}
-          className="text-5xl font-bold mb-10"
         >
-          Dashboard
-        </motion.h1>
 
-        <div className="grid grid-cols-3 gap-6">
+          <h1 className="text-5xl font-bold">
+            Welcome Back 👋
+          </h1>
+
+          <p className="text-gray-400 mt-3 text-lg">
+            Manage projects smarter and faster.
+          </p>
+
+        </motion.div>
+
+        <div className="grid grid-cols-3 gap-6 mt-10">
 
           <motion.div
-            whileHover={{scale:1.03}}
-            className="glass p-6 rounded-3xl"
+            whileHover={{y:-5}}
+            className="bg-[#111827] p-6 rounded-3xl"
           >
-            <h2 className="text-gray-400">
-              Total Tasks
-            </h2>
 
-            <p className="text-5xl mt-4 font-bold">
-              {tasks.length}
+            <p className="text-gray-400">
+              Productivity
             </p>
+
+            <h1 className="text-5xl font-bold mt-4">
+              87%
+            </h1>
 
           </motion.div>
 
           <motion.div
-            whileHover={{scale:1.03}}
-            className="glass p-6 rounded-3xl"
+            whileHover={{y:-5}}
+            className="bg-[#111827] p-6 rounded-3xl"
           >
-            <h2 className="text-gray-400">
-              Completed
-            </h2>
 
-            <p className="text-5xl mt-4 font-bold">
-              {completed}
+            <p className="text-gray-400">
+              Tasks Completed
             </p>
+
+            <h1 className="text-5xl font-bold mt-4">
+              24
+            </h1>
 
           </motion.div>
 
           <motion.div
-            whileHover={{scale:1.03}}
-            className="glass p-6 rounded-3xl"
+            whileHover={{y:-5}}
+            className="bg-[#111827] p-6 rounded-3xl"
           >
-            <h2 className="text-gray-400">
-              Pending
-            </h2>
 
-            <p className="text-5xl mt-4 font-bold">
-              {pending}
+            <p className="text-gray-400">
+              Team Members
             </p>
+
+            <h1 className="text-5xl font-bold mt-4">
+              8
+            </h1>
 
           </motion.div>
 
@@ -136,13 +92,13 @@ export default function Dashboard(){
 
         <div className="grid grid-cols-2 gap-6 mt-10">
 
-          <div className="glass p-6 rounded-3xl">
+          <div className="bg-[#111827] p-6 rounded-3xl">
 
             <h2 className="text-3xl font-bold mb-5">
               Progress
             </h2>
 
-            <PieChart width={350} height={300}>
+            <PieChart width={300} height={300}>
 
               <Pie
                 data={data}
@@ -151,16 +107,8 @@ export default function Dashboard(){
                 label
               >
 
-                {
-                  data.map((entry,index) => (
-
-                    <Cell
-                      key={index}
-                      fill={COLORS[index]}
-                    />
-
-                  ))
-                }
+                <Cell fill="#6366f1" />
+                <Cell fill="#8b5cf6" />
 
               </Pie>
 
@@ -170,7 +118,7 @@ export default function Dashboard(){
 
           </div>
 
-          <div className="glass p-6 rounded-3xl">
+          <div className="bg-[#111827] p-6 rounded-3xl">
 
             <h2 className="text-3xl font-bold mb-5">
               Recent Activity
@@ -178,16 +126,16 @@ export default function Dashboard(){
 
             <div className="space-y-4">
 
-              <div className="bg-white/5 p-4 rounded-xl">
+              <div className="bg-[#1f2937] p-4 rounded-2xl">
+                Rahul completed dashboard UI
+              </div>
+
+              <div className="bg-[#1f2937] p-4 rounded-2xl">
                 New project created
               </div>
 
-              <div className="bg-white/5 p-4 rounded-xl">
-                Backend task completed
-              </div>
-
-              <div className="bg-white/5 p-4 rounded-xl">
-                UI updated
+              <div className="bg-[#1f2937] p-4 rounded-2xl">
+                API deployed successfully
               </div>
 
             </div>
@@ -196,9 +144,31 @@ export default function Dashboard(){
 
         </div>
 
-        <ProjectSection />
+        {
+          role === "Admin" && (
 
-        <TaskSection />
+            <div className="mt-10 bg-[#111827] p-6 rounded-3xl">
+
+              <h1 className="text-3xl font-bold mb-5">
+                Admin Controls
+              </h1>
+
+              <div className="flex gap-5">
+
+                <button className="bg-indigo-500 px-6 py-3 rounded-2xl">
+                  Create Project
+                </button>
+
+                <button className="bg-purple-500 px-6 py-3 rounded-2xl">
+                  Create Task
+                </button>
+
+              </div>
+
+            </div>
+
+          )
+        }
 
       </div>
 

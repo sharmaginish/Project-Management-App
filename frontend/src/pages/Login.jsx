@@ -29,6 +29,16 @@ export default function Login() {
       res.data.token
     );
 
+    localStorage.setItem(
+  "role",
+  res.data.role
+);
+
+localStorage.setItem(
+  "user",
+  JSON.stringify(res.data.user)
+);
+
     alert("Login Successful");
 
     window.location.href = "/";
