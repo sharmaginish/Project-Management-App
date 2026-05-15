@@ -1,16 +1,14 @@
 import {
   FaHome,
   FaTasks,
+  FaUserCircle,
+  FaSignOutAlt,
   FaProjectDiagram,
   FaChartPie,
-  FaCog,
-  FaUserCircle,
-  FaSignOutAlt
+  FaCog
 } from "react-icons/fa";
 
 import { Link } from "react-router-dom";
-
-import { motion } from "framer-motion";
 
 export default function Sidebar(){
 
@@ -25,15 +23,11 @@ export default function Sidebar(){
 
   return (
 
-    <motion.div
-      initial={{x:-100,opacity:0}}
-      animate={{x:0,opacity:1}}
-      className="fixed left-0 top-0 h-screen w-72 bg-[#111827] border-r border-white/10 p-6 flex flex-col justify-between"
-    >
+    <div className="fixed left-0 top-0 h-screen w-72 bg-[#111827] text-white p-6 flex flex-col justify-between border-r border-white/10">
 
       <div>
 
-        <h1 className="text-4xl font-bold text-white mb-10">
+        <h1 className="text-4xl font-bold mb-10">
           TaskFlow
         </h1>
 
@@ -136,6 +130,8 @@ export default function Sidebar(){
 
       </div>
 
-    </motion.div>
+    </div>
+
   );
+
 }
