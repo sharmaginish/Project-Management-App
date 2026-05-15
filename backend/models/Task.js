@@ -1,66 +1,111 @@
-// backend/models/Task.js
-
 const mongoose = require("mongoose");
 
-const taskSchema = new mongoose.Schema(
-  {
-    title: {
-      type: String,
-      required: true,
-    },
+const taskSchema =
+  new mongoose.Schema(
 
-    description: {
-      type: String,
-      default: "",
-    },
+    {
 
-    priority: {
-      type: String,
-      enum: ["Low", "Medium", "High"],
-      default: "Medium",
-    },
+      title: {
 
-    status: {
-      type: String,
-      enum: [
-        "Pending",
-        "In Progress",
-        "Completed",
-      ],
-      default: "Pending",
-    },
+        type: String,
 
-    // PROJECT
-    project: {
-      type:
-        mongoose.Schema.Types.ObjectId,
-      ref: "Project",
-      required: true,
-    },
+        required: true,
 
-    // TASK ADMIN
-    admin: {
-      type:
-        mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
+        trim: true,
 
-    // TASK MEMBERS
-    members: [
-      {
+      },
+
+      description: {
+
+        type: String,
+
+        default: "",
+
+        trim: true,
+
+      },
+
+      priority: {
+
+        type: String,
+
+        enum: [
+          "Low",
+          "Medium",
+          "High"
+        ],
+
+        default: "Medium",
+
+      },
+
+      status: {
+
+        type: String,
+
+        enum: [
+          "Pending",
+          "In Progress",
+          "Completed",
+        ],
+
+        default: "Pending",
+
+      },
+
+      // OPTIONAL PROJECT
+
+      project: {
+
         type:
           mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-  },
-  {
-    timestamps: true,
-  }
-);
 
-module.exports = mongoose.model(
-  "Task",
-  taskSchema
-);
+        ref: "Project",
+
+        default: null,
+
+      },
+
+      // TASK ADMIN
+
+      admin: {
+
+        type:
+          mongoose.Schema.Types.ObjectId,
+
+        ref: "User",
+
+        required: true,
+
+      },
+
+      // TASK MEMBERS
+
+      members: [
+
+        {
+
+          type:
+            mongoose.Schema.Types.ObjectId,
+
+          ref: "User",
+
+        },
+
+      ],
+
+    },
+
+    {
+
+      timestamps: true,
+
+    }
+
+  );
+
+module.exports =
+  mongoose.model(
+    "Task",
+    taskSchema
+  );

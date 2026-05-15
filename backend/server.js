@@ -11,13 +11,26 @@ dotenv.config();
 const app = express();
 
 
-// MIDDLEWARE
-app.use(cors());
+
+/* =========================================
+   MIDDLEWARE
+========================================= */
+
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 
 
-// ROUTES
+
+/* =========================================
+   ROUTES
+========================================= */
+
 const authRoutes = require(
   "./routes/authRoutes"
 );
@@ -31,7 +44,11 @@ const taskRoutes = require(
 );
 
 
-// API ROUTES
+
+/* =========================================
+   API ROUTES
+========================================= */
+
 app.use(
   "/api/auth",
   authRoutes
@@ -48,17 +65,32 @@ app.use(
 );
 
 
-// TEST ROUTE
+
+/* =========================================
+   TEST ROUTE
+========================================= */
+
 app.get("/", (req, res) => {
 
-  res.send("API Running");
+  res.send("API Running Successfully");
 
 });
 
 
-// DATABASE
+
+/* =========================================
+   DATABASE
+========================================= */
+
+mongoose.set(
+  "strictQuery",
+  true
+);
+
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(
+    process.env.MONGO_URI
+  )
   .then(() => {
 
     console.log(
@@ -68,12 +100,20 @@ mongoose
   })
   .catch((err) => {
 
+    console.log(
+      "MongoDB Error:"
+    );
+
     console.log(err);
 
   });
 
 
-// SERVER
+
+/* =========================================
+   SERVER
+========================================= */
+
 const PORT =
   process.env.PORT || 5000;
 
@@ -84,3 +124,35 @@ app.listen(PORT, () => {
   );
 
 });
+
+
+
+/* =========================================
+   ERROR HANDLERS
+========================================= */
+
+process.on(
+  "unhandledRejection",
+  (err) => {
+
+    console.log(
+      "Unhandled Rejection:"
+    );
+
+    console.log(err);
+
+  }
+);
+
+process.on(
+  "uncaughtException",
+  (err) => {
+
+    console.log(
+      "Uncaught Exception:"
+    );
+
+    console.log(err);
+
+  }
+);
