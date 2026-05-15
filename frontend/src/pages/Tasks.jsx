@@ -489,6 +489,96 @@ export default function Tasks() {
 
         </div>
 
+{/* CREATE TASK */}
+
+{
+  role === "Admin" && (
+
+    <div className="
+      bg-[#111827]
+      p-6
+      rounded-3xl
+      border
+      border-white/10
+      mb-8
+    ">
+
+      <h2 className="
+        text-2xl
+        font-bold
+        mb-6
+      ">
+
+        Create Task
+
+      </h2>
+
+      <div className="
+        grid
+        grid-cols-1
+        md:grid-cols-2
+        gap-4
+      ">
+
+        <input
+          type="text"
+          placeholder="Task Title"
+          value={title}
+          onChange={(e) =>
+            setTitle(
+              e.target.value
+            )
+          }
+          className="
+            bg-[#1f2937]
+            p-4
+            rounded-2xl
+            outline-none
+          "
+        />
+
+        <input
+          type="text"
+          placeholder="Task Description"
+          value={description}
+          onChange={(e) =>
+            setDescription(
+              e.target.value
+            )
+          }
+          className="
+            bg-[#1f2937]
+            p-4
+            rounded-2xl
+            outline-none
+          "
+        />
+
+      </div>
+
+      <button
+        onClick={createTask}
+        className="
+          mt-5
+          bg-gradient-to-r
+          from-indigo-500
+          to-purple-600
+          px-6
+          py-3
+          rounded-2xl
+          font-bold
+        "
+      >
+
+        Create Task
+
+      </button>
+
+    </div>
+
+  )
+}
+
         {/* TASK LIST */}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

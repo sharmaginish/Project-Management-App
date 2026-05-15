@@ -476,6 +476,80 @@ export default function Analytics() {
 
               {/* BAR CHART */}
 
+              {/* TASK STATUS BAR GRAPH */}
+
+<div className="
+  bg-[#111827]
+  p-5
+  md:p-8
+  rounded-3xl
+  border
+  border-white/10
+  overflow-x-auto
+  mt-10
+">
+
+  <h2 className="
+    text-2xl
+    md:text-3xl
+    font-bold
+    mb-8
+  ">
+
+    Task Status Graph
+
+  </h2>
+
+  <div className="
+    min-w-[300px]
+    md:min-w-[600px]
+  ">
+
+    <ResponsiveContainer
+      width="100%"
+      height={350}
+    >
+
+      <BarChart
+        data={[
+          {
+            name: "Pending",
+            value: pendingTasks
+          },
+          {
+            name: "In Progress",
+            value: inProgressTasks
+          },
+          {
+            name: "Completed",
+            value: completedTasks
+          }
+        ]}
+      >
+
+        <CartesianGrid
+          strokeDasharray="3 3"
+        />
+
+        <XAxis dataKey="name" />
+
+        <YAxis />
+
+        <Tooltip />
+
+        <Bar
+          dataKey="value"
+          fill="#8b5cf6"
+        />
+
+      </BarChart>
+
+    </ResponsiveContainer>
+
+  </div>
+
+</div>
+
               <div className="bg-[#111827] p-5 md:p-8 rounded-3xl border border-white/10 overflow-x-auto">
 
                 <h2 className="text-2xl md:text-3xl font-bold mb-8">
