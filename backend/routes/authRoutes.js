@@ -154,6 +154,60 @@ router.get(
   }
 );
 
+router.get(
+  "/users",
+  protect,
+
+  async(req,res)=>{
+
+    try{
+
+      const users =
+        await User.find().select(
+          "-password"
+        );
+
+      res.json(users);
+
+    }catch(err){
+
+      res.status(500).json({
+        message:err.message
+      });
+
+    }
+
+  }
+);
+
+
+
+router.delete(
+  "/users/:id",
+  protect,
+
+  async(req,res)=>{
+
+    try{
+
+      await User.findByIdAndDelete(
+        req.params.id
+      );
+
+      res.json({
+        message:"Member removed"
+      });
+
+    }catch(err){
+
+      res.status(500).json({
+        message:err.message
+      });
+
+    }
+
+  }
+);
 
 
 module.exports = router;
