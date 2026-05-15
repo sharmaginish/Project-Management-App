@@ -22,12 +22,14 @@ function App() {
         <Route
           path="/"
           element={
-            token ? (
-              <Dashboard />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
+  token ? (
+    <div className="text-3xl p-10">
+      Login Success
+    </div>
+  ) : (
+    <Navigate to="/login" />
+  )
+}
         />
 
         <Route

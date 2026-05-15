@@ -12,30 +12,39 @@ export default function Login() {
 
   const handleLogin = async () => {
 
-    try {
+  try {
 
-      const res = await axios.post(
-        "https://project-management-app-jtoh.onrender.com/api/auth/login",
-        {
-          email,
-          password,
-        }
-      );
+    const res = await axios.post(
+      "https://project-management-app-jtoh.onrender.com/api/auth/login",
+      {
+        email,
+        password,
+      }
+    );
 
-      localStorage.setItem(
-        "token",
-        res.data.token
-      );
+    console.log(res.data);
 
-      window.location.reload();
+    localStorage.setItem(
+      "token",
+      res.data.token
+    );
 
-    } catch (err) {
+    alert("Login Successful");
 
-      alert(err.response.data.message);
+    window.location.href = "/";
 
-    }
+  } catch (err) {
 
-  };
+    console.log(err);
+
+    alert(
+      err.response?.data?.message ||
+      "Login failed"
+    );
+
+  }
+
+};
 
   return (
 
