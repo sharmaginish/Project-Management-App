@@ -1,46 +1,52 @@
 const mongoose = require("mongoose");
 
-const projectSchema = new mongoose.Schema(
-  {
-    title: {
-      type: String,
-      required: true,
-    },
+const projectSchema =
+  new mongoose.Schema(
+    {
+      title: {
+        type: String,
+        required: true,
+      },
 
-    description: {
-      type: String,
-    },
+      description: {
+        type: String,
+        default: "",
+      },
 
-    progress: {
-      type: Number,
-      default: 0,
-    },
+      progress: {
+        type: Number,
+        default: 0,
+      },
 
-    status: {
-      type: String,
-      default: "Active",
-    },
+      status: {
+        type: String,
+        default: "Active",
+      },
 
-    admin: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-
-    members: [
-      {
+      // PROJECT ADMIN
+      admin: {
         type:
           mongoose.Schema.Types.ObjectId,
-
         ref: "User",
+        required: true,
       },
-    ],
-  },
-  {
-    timestamps: true,
-  }
-);
 
-module.exports = mongoose.model(
-  "Project",
-  projectSchema
-);
+      // PROJECT MEMBERS
+      members: [
+        {
+          type:
+            mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+      ],
+    },
+    {
+      timestamps: true,
+    }
+  );
+
+module.exports =
+  mongoose.model(
+    "Project",
+    projectSchema
+  );

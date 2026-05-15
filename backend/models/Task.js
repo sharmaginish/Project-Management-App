@@ -14,6 +14,12 @@ const taskSchema = new mongoose.Schema(
       default: "",
     },
 
+    priority: {
+      type: String,
+      enum: ["Low", "Medium", "High"],
+      default: "Medium",
+    },
+
     status: {
       type: String,
       enum: [
@@ -24,12 +30,7 @@ const taskSchema = new mongoose.Schema(
       default: "Pending",
     },
 
-    priority: {
-      type: String,
-      enum: ["Low", "Medium", "High"],
-      default: "Medium",
-    },
-
+    // PROJECT
     project: {
       type:
         mongoose.Schema.Types.ObjectId,
@@ -37,11 +38,22 @@ const taskSchema = new mongoose.Schema(
       required: true,
     },
 
-    createdBy: {
+    // TASK ADMIN
+    admin: {
       type:
         mongoose.Schema.Types.ObjectId,
       ref: "User",
+      required: true,
     },
+
+    // TASK MEMBERS
+    members: [
+      {
+        type:
+          mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     timestamps: true,

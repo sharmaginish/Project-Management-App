@@ -1,8 +1,8 @@
-// backend/routes/taskRoutes.js
-
 const express = require("express");
 
-const Task = require("../models/Task");
+const Task = require(
+  "../models/Task"
+);
 
 const Project = require(
   "../models/Project"
@@ -15,9 +15,8 @@ const protect = require(
 const router = express.Router();
 
 
-
 /* =========================================
-   GET PROJECT TASKS
+   GET TASKS OF PROJECT
 ========================================= */
 router.get(
   "/project/:projectId",
@@ -31,9 +30,18 @@ router.get(
         await Task.find({
           project:
             req.params.projectId,
-        }).sort({
-          createdAt: -1,
-        });
+        })
+          .populate(
+            "admin",
+            "name email"
+          )
+          .populate(
+            "members",
+            "name email"
+          )
+          .sort({
+            createdAt: -1,
+          });
 
       res.json(tasks);
 
@@ -42,17 +50,16 @@ router.get(
       console.log(err);
 
       res.status(500).json({
-        message: err.message,
+        message:
+          err.message,
       });
     }
   }
 );
 
 
-
 /* =========================================
    CREATE TASK
-   ONLY ADMIN
 ========================================= */
 router.post(
   "/",
@@ -69,7 +76,6 @@ router.post(
         projectId,
       } = req.body;
 
-      // FIND PROJECT
       const project =
         await Project.findById(
           projectId
@@ -83,11 +89,10 @@ router.post(
         });
       }
 
-      // ONLY ADMIN
+      // ONLY PROJECT ADMIN
       if (
-        !project.admin ||
         project.admin.toString() !==
-          req.user.id
+        req.user.id
       ) {
 
         return res.status(403).json({
@@ -96,41 +101,62 @@ router.post(
         });
       }
 
-      // CREATE TASK
       const task =
         await Task.create({
           title,
           description,
           priority,
+
           project: projectId,
-          createdBy: req.user.id,
+
+          admin: req.user.id,
+
+          members: [],
         });
 
-      res.status(201).json(task);
+      const populatedTask =
+        await Task.findById(
+          task._id
+        )
+          .populate(
+            "admin",
+            "name email"
+          )
+          .populate(
+            "members",
+            "name email"
+          );
+
+      res.status(201).json(
+        populatedTask
+      );
 
     } catch (err) {
 
       console.log(err);
 
       res.status(500).json({
-        message: err.message,
+        message:
+          err.message,
       });
     }
   }
 );
 
 
-
 /* =========================================
-   UPDATE TASK STATUS
+   UPDATE TASK MEMBERS
 ========================================= */
 router.put(
-  "/:id",
+  "/:id/members",
   protect,
 
   async (req, res) => {
 
     try {
+
+      const { members } =
+        req.body;
 
       const task =
         await Task.findById(
@@ -145,29 +171,55 @@ router.put(
         });
       }
 
-      task.status =
-        req.body.status;
+      // ONLY TASK ADMIN
+      if (
+        task.admin.toString() !==
+        req.user.id
+      ) {
+
+        return res.status(403).json({
+          message:
+            "Only task admin can edit members",
+        });
+      }
+
+      task.members =
+        members;
 
       await task.save();
 
-      res.json(task);
+      const updatedTask =
+        await Task.findById(
+          task._id
+        )
+          .populate(
+            "admin",
+            "name email"
+          )
+          .populate(
+            "members",
+            "name email"
+          );
+
+      res.json(
+        updatedTask
+      );
 
     } catch (err) {
 
       console.log(err);
 
       res.status(500).json({
-        message: err.message,
+        message:
+          err.message,
       });
     }
   }
 );
 
 
-
 /* =========================================
    DELETE TASK
-   ONLY ADMIN
 ========================================= */
 router.delete(
   "/:id",
@@ -190,21 +242,15 @@ router.delete(
         });
       }
 
-      const project =
-        await Project.findById(
-          task.project
-        );
-
       // ONLY ADMIN
       if (
-        !project.admin ||
-        project.admin.toString() !==
-          req.user.id
+        task.admin.toString() !==
+        req.user.id
       ) {
 
         return res.status(403).json({
           message:
-            "Only admin can delete tasks",
+            "Only task admin can delete task",
         });
       }
 
@@ -214,7 +260,7 @@ router.delete(
 
       res.json({
         message:
-          "Task deleted successfully",
+          "Task deleted",
       });
 
     } catch (err) {
@@ -222,7 +268,8 @@ router.delete(
       console.log(err);
 
       res.status(500).json({
-        message: err.message,
+        message:
+          err.message,
       });
     }
   }

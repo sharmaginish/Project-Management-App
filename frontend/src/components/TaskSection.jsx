@@ -1,5 +1,3 @@
-// frontend/src/components/TaskSection.jsx
-
 import {
   useEffect,
   useState,
@@ -14,6 +12,17 @@ export default function TaskSection() {
   const { id } = useParams();
 
   const [tasks, setTasks] =
+    useState([]);
+
+  const [users, setUsers] =
+    useState([]);
+
+  const [selectedTask,
+    setSelectedTask] =
+    useState(null);
+
+  const [selectedMembers,
+    setSelectedMembers] =
     useState([]);
 
   const [project, setProject] =
@@ -50,6 +59,8 @@ export default function TaskSection() {
     fetchProject();
 
     fetchTasks();
+
+    fetchUsers();
 
   }, []);
 
@@ -106,23 +117,15 @@ export default function TaskSection() {
   };
 
 
-  // CREATE TASK
-  const createTask =
+  // FETCH USERS
+  const fetchUsers =
     async () => {
 
     try {
 
-      setLoading(true);
-
       const res =
-        await axios.post(
-          `https://project-management-app-jtoh.onrender.com/api/tasks`,
-          {
-            title,
-            description,
-            priority,
-            projectId: id,
-          },
+        await axios.get(
+          `https://project-management-app-jtoh.onrender.com/api/projects/users`,
           {
             headers: {
               Authorization:
@@ -131,7 +134,38 @@ export default function TaskSection() {
           }
         );
 
-      console.log(res.data);
+      setUsers(res.data);
+
+    } catch (err) {
+
+      console.log(err);
+    }
+  };
+
+
+  // CREATE TASK
+  const createTask =
+    async () => {
+
+    try {
+
+      setLoading(true);
+
+      await axios.post(
+        `https://project-management-app-jtoh.onrender.com/api/tasks`,
+        {
+          title,
+          description,
+          priority,
+          projectId: id,
+        },
+        {
+          headers: {
+            Authorization:
+              `Bearer ${token}`,
+          },
+        }
+      );
 
       alert("Task Created");
 
@@ -146,13 +180,97 @@ export default function TaskSection() {
       console.log(err);
 
       alert(
-        err.response?.data?.message ||
+        err.response?.data
+          ?.message ||
         "Error creating task"
       );
 
     } finally {
 
       setLoading(false);
+    }
+  };
+
+
+  // OPEN MEMBERS
+  const openMembers =
+    (task) => {
+
+    setSelectedTask(task);
+
+    setSelectedMembers(
+      task.members?.map(
+        (member) =>
+          member._id
+      ) || []
+    );
+  };
+
+
+  // SELECT MEMBER
+  const handleSelect =
+    (userId) => {
+
+    if (
+      selectedMembers.includes(
+        userId
+      )
+    ) {
+
+      setSelectedMembers(
+        selectedMembers.filter(
+          (id) =>
+            id !== userId
+        )
+      );
+
+    } else {
+
+      setSelectedMembers([
+        ...selectedMembers,
+        userId,
+      ]);
+    }
+  };
+
+
+  // SAVE TASK MEMBERS
+  const saveTaskMembers =
+    async () => {
+
+    try {
+
+      await axios.put(
+        `https://project-management-app-jtoh.onrender.com/api/tasks/${selectedTask._id}/members`,
+        {
+          members:
+            selectedMembers,
+        },
+        {
+          headers: {
+            Authorization:
+              `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert(
+        "Task members updated"
+      );
+
+      setSelectedTask(null);
+
+      fetchTasks();
+
+    } catch (err) {
+
+      console.log(err);
+
+      alert(
+        err.response?.data
+          ?.message ||
+        "Error"
+      );
     }
   };
 
@@ -176,7 +294,7 @@ export default function TaskSection() {
         </div>
 
 
-        {/* ONLY ADMIN */}
+        {/* CREATE TASK */}
         {project?.admin?._id ===
           currentUserId && (
 
@@ -288,6 +406,21 @@ export default function TaskSection() {
 
               </div>
 
+              {/* ADMIN ONLY */}
+              {task.admin?._id ===
+                currentUserId && (
+
+                <button
+                  onClick={() =>
+                    openMembers(task)
+                  }
+                  className="mt-4 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl text-sm"
+                >
+                  Manage Members
+                </button>
+
+              )}
+
             </div>
 
           ))}
@@ -295,6 +428,100 @@ export default function TaskSection() {
         </div>
 
       </div>
+
+
+      {/* MEMBER MODAL */}
+      {selectedTask && (
+
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+
+          <div className="bg-[#1e293b] p-8 rounded-3xl w-full max-w-3xl">
+
+            <div className="flex items-center justify-between mb-6">
+
+              <h2 className="text-2xl font-bold">
+                Task Members
+              </h2>
+
+              <button
+                onClick={() =>
+                  setSelectedTask(null)
+                }
+                className="text-red-400"
+              >
+                Close
+              </button>
+
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              {users.map((user) => (
+
+                <div
+                  key={user._id}
+                  onClick={() =>
+                    handleSelect(
+                      user._id
+                    )
+                  }
+                  className={`p-4 rounded-2xl border cursor-pointer ${
+                    selectedMembers.includes(
+                      user._id
+                    )
+                      ? "bg-blue-600 border-blue-400"
+                      : "bg-[#0f172a] border-gray-700"
+                  }`}
+                >
+
+                  <div className="flex items-center gap-3">
+
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-cyan-400 to-blue-600 flex items-center justify-center font-bold">
+
+                      {user.name
+                        ?.charAt(0)
+                        .toUpperCase()}
+
+                    </div>
+
+                    <div>
+
+                      <h3 className="font-semibold">
+                        {user.name}
+                      </h3>
+
+                      <p className="text-sm text-gray-300">
+                        {user.email}
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              ))}
+
+            </div>
+
+            <div className="mt-8 flex justify-end">
+
+              <button
+                onClick={
+                  saveTaskMembers
+                }
+                className="bg-gradient-to-r from-blue-600 to-cyan-500 px-8 py-3 rounded-2xl font-semibold"
+              >
+                Save Members
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      )}
 
     </div>
   );

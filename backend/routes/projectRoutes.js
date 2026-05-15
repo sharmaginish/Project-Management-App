@@ -1,33 +1,40 @@
+// backend/routes/projectRoutes.js
+
 const express = require("express");
 
-const Project = require("../models/Project");
-const User = require("../models/User");
+const Project = require(
+  "../models/Project"
+);
 
-const protect = require("../middleware/authMiddleware");
+const User = require(
+  "../models/User"
+);
+
+const protect = require(
+  "../middleware/authMiddleware"
+);
 
 const router = express.Router();
 
 
-
-/* =========================================
-   GET ALL USERS
-========================================= */
+// GET USERS
 router.get(
   "/users",
   protect,
 
   async (req, res) => {
+
     try {
 
       const users =
-        await User.find().select("-password");
+        await User.find().select(
+          "-password"
+        );
 
       res.json(users);
 
     } catch (err) {
 
-      console.log(err);
-
       res.status(500).json({
         message: err.message,
       });
@@ -36,41 +43,7 @@ router.get(
 );
 
 
-
-/* =========================================
-   GET ALL PROJECTS
-========================================= */
-router.get(
-  "/",
-  protect,
-
-  async (req, res) => {
-    try {
-
-      const projects =
-        await Project.find()
-          .populate("admin", "name email")
-          .populate("members", "name email")
-          .sort({ createdAt: -1 });
-
-      res.json(projects);
-
-    } catch (err) {
-
-      console.log(err);
-
-      res.status(500).json({
-        message: err.message,
-      });
-    }
-  }
-);
-
-
-
-/* =========================================
-   GET SINGLE PROJECT
-========================================= */
+// GET PROJECT
 router.get(
   "/:id",
   protect,
@@ -84,27 +57,17 @@ router.get(
           req.params.id
         )
           .populate(
-            "members",
+            "admin",
             "name email"
           )
           .populate(
-            "admin",
+            "members",
             "name email"
           );
-
-      if (!project) {
-
-        return res.status(404).json({
-          message:
-            "Project not found",
-        });
-      }
 
       res.json(project);
 
     } catch (err) {
-
-      console.log(err);
 
       res.status(500).json({
         message: err.message,
@@ -114,30 +77,21 @@ router.get(
 );
 
 
-
-/* =========================================
-   CREATE PROJECT
-========================================= */
+// CREATE PROJECT
 router.post(
   "/",
   protect,
 
   async (req, res) => {
+
     try {
 
       const project =
         await Project.create({
-
           title: req.body.title,
-
           description:
             req.body.description,
 
-          progress: 0,
-
-          status: "Active",
-
-          // ADMIN = CREATOR
           admin: req.user.id,
 
           members: [],
@@ -147,8 +101,6 @@ router.post(
 
     } catch (err) {
 
-      console.log(err);
-
       res.status(500).json({
         message: err.message,
       });
@@ -157,46 +109,35 @@ router.post(
 );
 
 
-
-/* =========================================
-   UPDATE PROJECT MEMBERS
-   ONLY ADMIN CAN UPDATE
-========================================= */
+// UPDATE MEMBERS
 router.put(
   "/:id/members",
   protect,
 
   async (req, res) => {
+
     try {
 
-      const { members } = req.body;
+      const { members } =
+        req.body;
 
       const project =
         await Project.findById(
           req.params.id
         );
 
-      // PROJECT NOT FOUND
       if (!project) {
 
         return res.status(404).json({
-          message: "Project not found",
+          message:
+            "Project not found",
         });
       }
 
-      // CHECK ADMIN EXISTS
-if (!project.admin) {
-
-  return res.status(403).json({
-    message: "Project admin not found",
-  });
-}
-
-      // ONLY ADMIN ACCESS
+      // ONLY ADMIN
       if (
-        project.admin &&
         project.admin.toString() !==
-          req.user.id
+        req.user.id
       ) {
 
         return res.status(403).json({
@@ -205,8 +146,8 @@ if (!project.admin) {
         });
       }
 
-      // UPDATE MEMBERS
-      project.members = members;
+      project.members =
+        members;
 
       await project.save();
 
@@ -223,94 +164,9 @@ if (!project.admin) {
             "name email"
           );
 
-      res.json({
-        message:
-          "Members updated successfully",
-        project: updatedProject,
-      });
+      res.json(updatedProject);
 
     } catch (err) {
-
-      console.log(err);
-
-      res.status(500).json({
-        message: err.message,
-      });
-    }
-  }
-);
-
-
-
-/* =========================================
-   UPDATE PROJECT PROGRESS
-========================================= */
-router.put(
-  "/:id",
-  protect,
-
-  async (req, res) => {
-    try {
-
-      const project =
-        await Project.findById(
-          req.params.id
-        );
-
-      if (!project) {
-
-        return res.status(404).json({
-          message: "Project not found",
-        });
-      }
-
-      project.progress =
-        req.body.progress;
-
-      if (project.progress >= 100) {
-
-        project.status =
-          "Completed";
-      }
-
-      await project.save();
-
-      res.json(project);
-
-    } catch (err) {
-
-      console.log(err);
-
-      res.status(500).json({
-        message: err.message,
-      });
-    }
-  }
-);
-
-
-
-/* =========================================
-   DELETE PROJECT
-========================================= */
-router.delete(
-  "/:id",
-  protect,
-
-  async (req, res) => {
-    try {
-
-      await Project.findByIdAndDelete(
-        req.params.id
-      );
-
-      res.json({
-        message: "Project deleted",
-      });
-
-    } catch (err) {
-
-      console.log(err);
 
       res.status(500).json({
         message: err.message,
