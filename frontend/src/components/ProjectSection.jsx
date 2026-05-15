@@ -15,7 +15,7 @@ export default function ProjectSection() {
     try {
 
       const res = await axios.get(
-        "http://localhost:5000/api/projects",
+        "https://project-management-app-jtoh.onrender.com/",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -42,7 +42,7 @@ export default function ProjectSection() {
     try {
 
       await axios.post(
-        "http://localhost:5000/api/projects",
+        "https://project-management-app-jtoh.onrender.com/",
 
         {
           title,
