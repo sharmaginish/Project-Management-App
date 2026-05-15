@@ -25,6 +25,7 @@ export default function Signup({ setShowSignup }) {
       );
 
       alert("Signup Successful");
+      
       setShowSignup(false);
       
 
