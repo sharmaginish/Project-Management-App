@@ -6,164 +6,317 @@ import {
   FaChartPie,
   FaCog,
   FaUsers,
-  FaFolderOpen
+  FaFolderOpen,
+  FaBars,
+  FaTimes
 } from "react-icons/fa";
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+
+import { useState } from "react";
+
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Sidebar(){
+
+  const [open,setOpen] = useState(false);
+
+  const location = useLocation();
 
   const user = JSON.parse(
     sessionStorage.getItem("user")
   );
 
-  const role = user?.role;
+  const role = sessionStorage.getItem("role");
 
   const logout = () => {
 
     sessionStorage.clear();
 
-    window.location.href="/login";
+    window.location.href = "/login";
+
   };
+
+  const navItems = [
+
+    {
+      name:"Dashboard",
+      path:"/dashboard",
+      icon:<FaHome />
+    },
+
+    {
+      name:"Projects",
+      path:"/projects",
+      icon:<FaFolderOpen />
+    },
+
+    {
+      name:"Tasks",
+      path:"/tasks",
+      icon:<FaTasks />
+    },
+
+    {
+      name:"Analytics",
+      path:"/analytics",
+      icon:<FaChartPie />
+    },
+
+    {
+      name:"Profile",
+      path:"/profile",
+      icon:<FaUserCircle />
+    },
+
+    {
+      name:"Settings",
+      path:"/settings",
+      icon:<FaCog />
+    }
+
+  ];
+
+  if(role === "Admin"){
+
+    navItems.splice(3,0,{
+
+      name:"Members",
+      path:"/members",
+      icon:<FaUsers />
+
+    });
+
+  }
 
   return (
 
-    <div className="fixed left-0 top-0 h-screen w-72 bg-[#111827] text-white p-6 flex flex-col justify-between border-r border-white/10">
+    <>
 
-      <div>
+      <button
+        onClick={() => setOpen(true)}
+        className="md:hidden fixed top-5 left-5 z-50 bg-[#111827] text-white p-4 rounded-2xl shadow-2xl"
+      >
 
-        <h1 className="text-4xl font-bold mb-10">
-          AstraDesk
-        </h1>
+        <FaBars className="text-2xl" />
 
-        <div className="space-y-4">
+      </button>
 
-          <Link to="/dashboard">
+      <AnimatePresence>
 
-            <div className="flex items-center gap-4 p-4 rounded-2xl hover:bg-[#1f2937] transition">
+        {
+          open && (
 
-              <FaHome />
+            <motion.div
 
-              Dashboard
+              initial={{ opacity:0 }}
 
-            </div>
+              animate={{ opacity:1 }}
 
-          </Link>
+              exit={{ opacity:0 }}
 
-          <Link to="/projects">
+              className="fixed inset-0 bg-black/60 z-40 md:hidden"
 
-  <div className="flex items-center gap-4 p-4 rounded-2xl hover:bg-[#1f2937] transition">
+              onClick={() => setOpen(false)}
 
-    <FaFolderOpen />
+            />
 
-    Projects
+          )
+        }
 
-  </div>
+      </AnimatePresence>
 
-</Link>
+      <motion.div
 
-          <Link to="/tasks">
+        initial={{ x:-300 }}
 
-            <div className="flex items-center gap-4 p-4 rounded-2xl hover:bg-[#1f2937] transition">
+        animate={{
+          x:0
+        }}
 
-              <FaTasks />
+        transition={{
+          duration:0.4
+        }}
 
-              Tasks
+        className={`
+          fixed
+          top-0
+          left-0
+          h-screen
+          w-72
+          bg-[#111827]/95
+          backdrop-blur-xl
+          text-white
+          p-6
+          flex
+          flex-col
+          justify-between
+          border-r
+          border-white/10
+          z-50
+          transform
+          transition-transform
+          duration-300
+          shadow-2xl
+          ${open ? "translate-x-0" : "-translate-x-full"}
+          md:translate-x-0
+        `}
 
-            </div>
+      >
 
-          </Link>
+        <div>
 
-          {
-            role === "Admin" && (
+          <div className="flex justify-between items-center mb-10">
 
-              <Link to="/members">
+            <div>
 
-                <div className="flex items-center gap-4 p-4 rounded-2xl hover:bg-[#1f2937] transition">
+              <h1 className="text-4xl font-black bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">
 
-                  <FaUsers />
+                AstraDesk
 
-                  Members
+              </h1>
 
-                </div>
+              <p className="text-gray-400 text-sm mt-2">
 
-              </Link>
+                Workspace Manager
 
-            )
-          }
-
-          <Link to="/analytics">
-
-            <div className="flex items-center gap-4 p-4 rounded-2xl hover:bg-[#1f2937] transition">
-
-              <FaChartPie />
-
-              Analytics
-
-            </div>
-
-          </Link>
-
-          <Link to="/profile">
-
-            <div className="flex items-center gap-4 p-4 rounded-2xl hover:bg-[#1f2937] transition">
-
-              <FaUserCircle />
-
-              Profile
-
-            </div>
-
-          </Link>
-
-          <Link to="/settings">
-
-            <div className="flex items-center gap-4 p-4 rounded-2xl hover:bg-[#1f2937] transition">
-
-              <FaCog />
-
-              Settings
+              </p>
 
             </div>
 
-          </Link>
+            <button
+              onClick={() => setOpen(false)}
+              className="md:hidden bg-[#1f2937] p-3 rounded-xl"
+            >
+
+              <FaTimes />
+
+            </button>
+
+          </div>
+
+          <div className="space-y-3">
+
+            {
+              navItems.map((item,index)=>(
+
+                <Link
+                  to={item.path}
+                  key={index}
+                  onClick={() => setOpen(false)}
+                >
+
+                  <motion.div
+
+                    whileHover={{
+                      scale:1.03,
+                      x:5
+                    }}
+
+                    whileTap={{
+                      scale:0.98
+                    }}
+
+                    className={`
+                      flex
+                      items-center
+                      gap-4
+                      p-4
+                      rounded-2xl
+                      transition-all
+                      duration-300
+                      group
+                      ${
+                        location.pathname === item.path
+                        ? "bg-gradient-to-r from-indigo-500 to-purple-600 shadow-lg"
+                        : "hover:bg-[#1f2937]"
+                      }
+                    `}
+
+                  >
+
+                    <div className="text-xl group-hover:scale-110 transition-transform">
+
+                      {item.icon}
+
+                    </div>
+
+                    <span className="text-lg font-semibold">
+
+                      {item.name}
+
+                    </span>
+
+                  </motion.div>
+
+                </Link>
+
+              ))
+            }
+
+          </div>
 
         </div>
 
-      </div>
+        <div>
 
-      <div>
+          <motion.div
 
-        <div className="bg-[#1f2937] p-4 rounded-2xl">
+            whileHover={{
+              scale:1.02
+            }}
 
-          <p className="text-gray-400 text-sm">
-            Logged in as
-          </p>
+            className="bg-gradient-to-r from-[#1f2937] to-[#111827] p-5 rounded-3xl border border-white/10 shadow-xl"
 
-          <h2 className="text-xl font-bold mt-1">
-            {user?.name}
-          </h2>
+          >
 
-          <p className="text-gray-400 text-sm mt-1">
-            {role}
-          </p>
+            <p className="text-gray-400 text-sm">
+
+              Logged in as
+
+            </p>
+
+            <h2 className="text-2xl font-bold mt-2">
+
+              {user?.name}
+
+            </h2>
+
+            <div className="mt-3 inline-block bg-indigo-500/20 text-indigo-400 px-4 py-2 rounded-full text-sm font-bold">
+
+              {role}
+
+            </div>
+
+          </motion.div>
+
+          <motion.button
+
+            whileHover={{
+              scale:1.03
+            }}
+
+            whileTap={{
+              scale:0.98
+            }}
+
+            onClick={logout}
+
+            className="mt-5 w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 transition-all duration-300 p-4 rounded-2xl flex items-center justify-center gap-3 font-bold shadow-xl"
+
+          >
+
+            <FaSignOutAlt />
+
+            Logout
+
+          </motion.button>
 
         </div>
 
-        <button
-          onClick={logout}
-          className="mt-5 w-full bg-red-500 hover:bg-red-600 transition p-4 rounded-2xl flex items-center justify-center gap-3"
-        >
+      </motion.div>
 
-          <FaSignOutAlt />
-
-          Logout
-
-        </button>
-
-      </div>
-
-    </div>
+    </>
 
   );
 
