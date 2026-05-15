@@ -120,11 +120,11 @@ export default function Settings() {
 
       <Sidebar />
 
-      <div className="ml-72 p-10">
+      <div className="md:ml-72 p-4 md:p-10">
 
         <div className="mb-10">
 
-          <h1 className="text-5xl font-bold">
+          <h1 className="text-3xl md:text-5xlxl font-bold">
 
             Settings
 
@@ -309,7 +309,7 @@ export default function Settings() {
 
             </div>
 
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
 
               <div>
 
@@ -392,7 +392,7 @@ export default function Settings() {
 
             <div className="space-y-6">
 
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
 
                 <div>
 
@@ -437,7 +437,7 @@ export default function Settings() {
 
               </div>
 
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
 
                 <div>
 
@@ -482,7 +482,7 @@ export default function Settings() {
 
               </div>
 
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
 
                 <div>
 

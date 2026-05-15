@@ -19,7 +19,7 @@ export default function Profile() {
 
       <Sidebar />
 
-      <div className="ml-72 flex justify-center items-center min-h-screen p-6">
+      <div className="md:ml-72 flex justify-center items-center min-h-screen p-6">
 
         <motion.div
 
@@ -37,7 +37,7 @@ export default function Profile() {
             duration:0.5
           }}
 
-          className="bg-[#111827] w-full max-w-md rounded-[35px] p-10 shadow-2xl border border-white/10"
+          className="bg-[#111827] w-full max-w-md rounded-[35px] p-4 md:p-10 shadow-2xl border border-white/10"
 
         >
 

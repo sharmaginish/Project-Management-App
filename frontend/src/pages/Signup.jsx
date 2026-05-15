@@ -74,13 +74,13 @@ export default function Signup(){
           duration:0.5
         }}
 
-        className="bg-[#111827] w-full max-w-md rounded-[35px] p-10 border border-white/10 shadow-2xl"
+        className="bg-[#111827] w-full max-w-md rounded-[35px] p-4 md:p-10 border border-white/10 shadow-2xl"
 
       >
 
         <div className="text-center mb-10">
 
-          <h1 className="text-5xl font-bold text-white">
+          <h1 className="text-3xl md:text-5xlxl font-bold text-white">
 
             AstraDesk
 

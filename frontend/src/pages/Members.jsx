@@ -106,13 +106,13 @@ export default function Members() {
 
       <Sidebar />
 
-      <div className="ml-72 p-10">
+      <div className="md:ml-72 p-4 md:p-10">
 
-        <div className="flex justify-between items-center mb-10">
+        <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-10">
 
           <div>
 
-            <h1 className="text-5xl font-bold">
+            <h1 className="text-3xl md:text-5xlxl font-bold">
 
               Team Members
 
@@ -144,7 +144,7 @@ export default function Members() {
 
         </div>
 
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
           {
             loading ? (
@@ -226,7 +226,7 @@ export default function Members() {
 
                   </div>
 
-                  <div className="mt-6 flex justify-between items-center">
+                  <div className="mt-6 flex flex-col md:flex-row justify-between md:items-center gap-4">
 
                     <div className="bg-indigo-500/20 text-indigo-400 px-4 py-2 rounded-full flex items-center gap-2">
 

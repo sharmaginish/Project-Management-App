@@ -166,7 +166,7 @@ export default function Sidebar(){
 
         <div>
 
-          <div className="flex justify-between items-center mb-10">
+          <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-10">
 
             <div>
 

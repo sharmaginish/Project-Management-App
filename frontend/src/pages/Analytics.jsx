@@ -171,11 +171,11 @@ export default function Analytics() {
 
       <Sidebar />
 
-      <div className="ml-72 p-10">
+      <div className="md:ml-72 p-4 md:p-10">
 
         <div className="mb-10">
 
-          <h1 className="text-5xl font-bold">
+          <h1 className="text-3xl md:text-5xlxl font-bold">
 
             Analytics
 
@@ -202,7 +202,7 @@ export default function Analytics() {
 
             <>
 
-              <div className="grid grid-cols-4 gap-6 mb-10">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
 
                 <div className="bg-[#111827] p-6 rounded-3xl border border-white/10">
 
@@ -212,7 +212,7 @@ export default function Analytics() {
 
                   </p>
 
-                  <h2 className="text-5xl font-bold mt-4">
+                  <h2 className="text-3xl md:text-5xlxl font-bold mt-4">
 
                     {tasks.length}
 
@@ -228,7 +228,7 @@ export default function Analytics() {
 
                   </p>
 
-                  <h2 className="text-5xl font-bold mt-4 text-green-400">
+                  <h2 className="text-3xl md:text-5xlxl font-bold mt-4 text-green-400">
 
                     {completedTasks}
 
@@ -244,7 +244,7 @@ export default function Analytics() {
 
                   </p>
 
-                  <h2 className="text-5xl font-bold mt-4 text-indigo-400">
+                  <h2 className="text-3xl md:text-5xlxl font-bold mt-4 text-indigo-400">
 
                     {projects.length}
 
@@ -260,7 +260,7 @@ export default function Analytics() {
 
                   </p>
 
-                  <h2 className="text-5xl font-bold mt-4 text-purple-400">
+                  <h2 className="text-3xl md:text-5xlxl font-bold mt-4 text-purple-400">
 
                     {productivity}%
 
@@ -270,7 +270,7 @@ export default function Analytics() {
 
               </div>
 
-              <div className="grid grid-cols-2 gap-8 mb-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
 
                 <div className="bg-[#111827] p-8 rounded-3xl border border-white/10">
 

@@ -79,11 +79,11 @@ export default function Dashboard() {
 
       <Sidebar />
 
-      <div className="ml-72 p-10">
+      <div className="md:ml-72 p-4 md:p-10">
 
         <div className="mb-10">
 
-          <h1 className="text-5xl font-bold">
+          <h1 className="text-3xl md:text-5xlxl font-bold">
 
             Welcome Back,
             {" "}
@@ -112,7 +112,7 @@ export default function Dashboard() {
 
             <>
 
-              <div className="grid grid-cols-3 gap-6 mb-10">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
 
                 <div className="bg-[#111827] p-8 rounded-3xl border border-white/10">
 
@@ -126,7 +126,7 @@ export default function Dashboard() {
 
                       </p>
 
-                      <h2 className="text-5xl font-bold mt-4">
+                      <h2 className="text-3xl md:text-5xlxl font-bold mt-4">
 
                         {tasks.length}
 
@@ -134,7 +134,7 @@ export default function Dashboard() {
 
                     </div>
 
-                    <FaTasks className="text-5xl text-indigo-400" />
+                    <FaTasks className="text-3xl md:text-5xlxl text-indigo-400" />
 
                   </div>
 
@@ -152,7 +152,7 @@ export default function Dashboard() {
 
                       </p>
 
-                      <h2 className="text-5xl font-bold mt-4">
+                      <h2 className="text-3xl md:text-5xlxl font-bold mt-4">
 
                         {projects.length}
 
@@ -160,7 +160,7 @@ export default function Dashboard() {
 
                     </div>
 
-                    <FaFolderOpen className="text-5xl text-purple-400" />
+                    <FaFolderOpen className="text-3xl md:text-5xlxl text-purple-400" />
 
                   </div>
 
@@ -178,7 +178,7 @@ export default function Dashboard() {
 
                       </p>
 
-                      <h2 className="text-5xl font-bold mt-4">
+                      <h2 className="text-3xl md:text-5xlxl font-bold mt-4">
 
                         {completedTasks}
 
@@ -186,7 +186,7 @@ export default function Dashboard() {
 
                     </div>
 
-                    <FaCheckCircle className="text-5xl text-green-400" />
+                    <FaCheckCircle className="text-3xl md:text-5xlxl text-green-400" />
 
                   </div>
 

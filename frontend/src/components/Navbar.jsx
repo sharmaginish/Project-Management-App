@@ -10,7 +10,7 @@ export default function Navbar() {
 
   return (
 
-    <div className="bg-blue-600 text-white p-4 flex justify-between items-center">
+    <div className="bg-blue-600 text-white p-4 flex flex-col md:flex-row justify-between md:items-center gap-4">
 
       <h1 className="text-2xl font-bold">
         Project Manager
