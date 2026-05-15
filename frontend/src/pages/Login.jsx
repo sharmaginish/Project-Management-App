@@ -35,17 +35,17 @@ export default function Login() {
         }
       );
 
-      localStorage.setItem(
+      sessionStorage.setItem(
         "token",
         res.data.token
       );
 
-      localStorage.setItem(
+      sessionStorage.setItem(
         "user",
         JSON.stringify(res.data.user)
       );
 
-      localStorage.setItem(
+      sessionStorage.setItem(
         "role",
         res.data.user.role
       );

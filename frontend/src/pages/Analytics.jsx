@@ -10,7 +10,7 @@ import {
 export default function Analytics(){
 
   const tasks = JSON.parse(
-    localStorage.getItem("tasks")
+    sessionStorage.getItem("tasks")
   ) || [];
 
   const completed = tasks.filter(

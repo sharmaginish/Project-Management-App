@@ -21,12 +21,12 @@ export default function Projects() {
 
   const [loading, setLoading] = useState(true);
 
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
-  const role = localStorage.getItem("role");
+  const role = sessionStorage.getItem("role");
 
   const user = JSON.parse(
-    localStorage.getItem("user")
+    sessionStorage.getItem("user")
   );
 
   useEffect(() => {

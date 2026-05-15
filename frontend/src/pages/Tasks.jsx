@@ -3,7 +3,7 @@ import Sidebar from "../components/Sidebar";
 export default function Tasks(){
 
   const tasks = JSON.parse(
-    localStorage.getItem("tasks")
+    sessionStorage.getItem("tasks")
   ) || [];
 
   return (
