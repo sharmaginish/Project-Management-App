@@ -4,13 +4,13 @@ import axios from "axios";
 
 export default function Signup() {
 
+  const navigate = useNavigate();
+
   const [name, setName] = useState("");
 
   const [email, setEmail] = useState("");
 
   const [password, setPassword] = useState("");
-
-  const navigate = useNavigate();
 
   const signupUser = async () => {
 
@@ -18,7 +18,6 @@ export default function Signup() {
 
       await axios.post(
         "https://project-management-app-jtoh.onrender.com/api/auth/register",
-
         {
           name,
           email,
@@ -41,18 +40,18 @@ export default function Signup() {
 
   return (
 
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
 
-      <div className="bg-white p-8 rounded-xl shadow-lg w-96">
+      <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg w-full max-w-md">
 
-        <h1 className="text-3xl font-bold mb-6 text-center">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center">
           Signup
         </h1>
 
         <input
           type="text"
           placeholder="Enter name"
-          className="border w-full p-3 mb-4 rounded"
+          className="border w-full p-3 mb-4 rounded-lg text-sm sm:text-base"
           onChange={(e) =>
             setName(e.target.value)
           }
@@ -61,7 +60,7 @@ export default function Signup() {
         <input
           type="email"
           placeholder="Enter email"
-          className="border w-full p-3 mb-4 rounded"
+          className="border w-full p-3 mb-4 rounded-lg text-sm sm:text-base"
           onChange={(e) =>
             setEmail(e.target.value)
           }
@@ -70,7 +69,7 @@ export default function Signup() {
         <input
           type="password"
           placeholder="Enter password"
-          className="border w-full p-3 mb-4 rounded"
+          className="border w-full p-3 mb-4 rounded-lg text-sm sm:text-base"
           onChange={(e) =>
             setPassword(e.target.value)
           }
@@ -78,9 +77,18 @@ export default function Signup() {
 
         <button
           onClick={signupUser}
-          className="bg-green-500 text-white w-full p-3 rounded"
+          className="bg-green-500 hover:bg-green-600 transition text-white w-full p-3 rounded-lg"
         >
           Signup
+        </button>
+
+        <button
+          onClick={() =>
+            navigate("/login")
+          }
+          className="text-blue-500 w-full mt-4 text-sm sm:text-base"
+        >
+          Already have an account? Login
         </button>
 
       </div>

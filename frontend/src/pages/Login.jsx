@@ -2,15 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
-export default function Login({
-  setShowSignup
-}) {
+export default function Login() {
+
+  const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
 
   const [password, setPassword] = useState("");
-
-  const navigate = useNavigate();
 
   const handleLogin = async () => {
 
@@ -41,18 +39,18 @@ export default function Login({
 
   return (
 
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
 
-      <div className="bg-white p-8 rounded-xl shadow-lg w-96">
+      <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg w-full max-w-md">
 
-        <h1 className="text-3xl font-bold mb-6 text-center">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center">
           Login
         </h1>
 
         <input
           type="email"
           placeholder="Enter email"
-          className="border w-full p-3 mb-4 rounded"
+          className="border w-full p-3 mb-4 rounded-lg text-sm sm:text-base"
           onChange={(e) =>
             setEmail(e.target.value)
           }
@@ -61,7 +59,7 @@ export default function Login({
         <input
           type="password"
           placeholder="Enter password"
-          className="border w-full p-3 mb-4 rounded"
+          className="border w-full p-3 mb-4 rounded-lg text-sm sm:text-base"
           onChange={(e) =>
             setPassword(e.target.value)
           }
@@ -69,16 +67,16 @@ export default function Login({
 
         <button
           onClick={handleLogin}
-          className="bg-blue-500 text-white w-full p-3 rounded mb-4"
+          className="bg-blue-500 hover:bg-blue-600 transition text-white w-full p-3 rounded-lg mb-4"
         >
           Login
         </button>
 
         <button
           onClick={() =>
-  navigate("/signup")
-}
-          className="text-blue-500 w-full"
+            navigate("/signup")
+          }
+          className="text-blue-500 w-full text-sm sm:text-base"
         >
           Don't have an account? Signup
         </button>
