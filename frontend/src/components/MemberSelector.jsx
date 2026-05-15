@@ -11,7 +11,7 @@ export default function MemberSelector({
     setSelectedMembers] = useState([]);
 
   const token =
-    localStorage.getItem("token");
+    user?.token;
 
 
 

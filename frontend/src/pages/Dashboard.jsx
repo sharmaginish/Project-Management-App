@@ -18,10 +18,10 @@ export default function Dashboard() {
 
   const [loading, setLoading] = useState(true);
 
-  const token = sessionStorage.getItem("token");
+  const token = user?.token;;
 
   const user = JSON.parse(
-    sessionStorage.getItem("user")
+    localStorage.getItem("user")
   );
 
   useEffect(() => {

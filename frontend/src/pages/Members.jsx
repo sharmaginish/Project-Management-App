@@ -18,9 +18,9 @@ export default function Members() {
 
   const [loading, setLoading] = useState(true);
 
-  const token = sessionStorage.getItem("token");
+  const token = user?.token;
 
-  const role = sessionStorage.getItem("role");
+  const role = localStorage.getItem("role");
 
   useEffect(() => {
 

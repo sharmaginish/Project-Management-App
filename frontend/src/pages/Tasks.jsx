@@ -21,12 +21,12 @@ export default function Tasks() {
 
   const [loading, setLoading] = useState(true);
 
-  const token = sessionStorage.getItem("token");
+  const token = user?.token;
 
-  const role = sessionStorage.getItem("role");
+  const role = user?.role;
 
   const user = JSON.parse(
-    sessionStorage.getItem("user")
+    localStorage.getItem("user")
   );
 
   useEffect(() => {

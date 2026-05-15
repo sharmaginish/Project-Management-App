@@ -13,7 +13,7 @@ export default function ProjectDetails() {
 
   const [loading, setLoading] = useState(false);
 
-  const token = localStorage.getItem("token");
+  const token = user?.token;
 
   const userInfo =
     JSON.parse(localStorage.getItem("user"));

@@ -24,14 +24,14 @@ export default function Sidebar(){
   const location = useLocation();
 
   const user = JSON.parse(
-    sessionStorage.getItem("user")
+    localStorage.getItem("user")
   );
 
-  const role = sessionStorage.getItem("role");
+  const role = localStorage.getItem("role");
 
   const logout = () => {
 
-    sessionStorage.clear();
+    localStorage.clear();
 
     window.location.href = "/login";
 

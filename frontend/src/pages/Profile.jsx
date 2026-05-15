@@ -10,7 +10,7 @@ import {
 export default function Profile() {
 
   const user = JSON.parse(
-    sessionStorage.getItem("user")
+    localStorage.getItem("user")
   );
 
   return (

@@ -44,7 +44,7 @@ export default function TaskSection() {
     useState(false);
 
   const token =
-    localStorage.getItem("token");
+    user?.token;
 
   const userInfo = JSON.parse(
     localStorage.getItem("user") || "{}"

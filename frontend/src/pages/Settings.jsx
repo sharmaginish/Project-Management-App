@@ -52,7 +52,7 @@ export default function Settings() {
   );
 
   const user = JSON.parse(
-    sessionStorage.getItem("user")
+    localStorage.getItem("user")
   );
 
   useEffect(()=>{
@@ -104,7 +104,7 @@ export default function Settings() {
 
   const logout = () => {
 
-    sessionStorage.clear();
+    localStorage.clear();
 
     window.location.href="/login";
 

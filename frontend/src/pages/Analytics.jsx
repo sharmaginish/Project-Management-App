@@ -25,7 +25,7 @@ export default function Analytics() {
 
   const [loading,setLoading] = useState(true);
 
-  const token = sessionStorage.getItem("token");
+  const token = user?.token;
 
   useEffect(()=>{
 
