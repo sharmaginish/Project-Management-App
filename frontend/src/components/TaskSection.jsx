@@ -1,24 +1,16 @@
-// frontend/src/pages/ProjectTasks.jsx
-
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-export default function ProjectTasks() {
+export default function TaskSection() {
 
   const { id } = useParams();
 
   const [tasks, setTasks] = useState([]);
+  const [project, setProject] = useState(null);
 
-  const [project, setProject] =
-    useState(null);
-
-  const [title, setTitle] =
-    useState("");
-
-  const [description, setDescription] =
-    useState("");
-
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [priority, setPriority] =
     useState("Medium");
 
@@ -32,7 +24,8 @@ export default function ProjectTasks() {
     localStorage.getItem("user")
   );
 
-  const currentUserId = userInfo?._id;
+  const currentUserId =
+    userInfo?._id;
 
   useEffect(() => {
 
@@ -43,6 +36,7 @@ export default function ProjectTasks() {
   }, []);
 
   const fetchProject = async () => {
+
     try {
 
       const res = await axios.get(
@@ -57,11 +51,13 @@ export default function ProjectTasks() {
       setProject(res.data);
 
     } catch (err) {
+
       console.log(err);
     }
   };
 
   const fetchTasks = async () => {
+
     try {
 
       const res = await axios.get(
@@ -76,74 +72,62 @@ export default function ProjectTasks() {
       setTasks(res.data);
 
     } catch (err) {
+
       console.log(err);
     }
   };
 
   const createTask = async () => {
 
-  try {
+    try {
 
-    console.log("BUTTON CLICKED");
+      setLoading(true);
 
-    console.log("PROJECT ID:", id);
-
-    console.log("TITLE:", title);
-
-    console.log("TOKEN:", token);
-
-    setLoading(true);
-
-    const res = await axios.post(
-      `https://project-management-app-jtoh.onrender.com/api/tasks`,
-      {
-        title,
-        description,
-        priority,
-        projectId: id,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const res = await axios.post(
+        `https://project-management-app-jtoh.onrender.com/api/tasks`,
+        {
+          title,
+          description,
+          priority,
+          projectId: id,
         },
-      }
-    );
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    console.log("SUCCESS:", res.data);
+      console.log(res.data);
 
-    alert("Task Created");
+      alert("Task Created");
 
-    setTitle("");
+      setTitle("");
+      setDescription("");
 
-    setDescription("");
+      fetchTasks();
 
-    fetchTasks();
+    } catch (err) {
 
-  } catch (err) {
+      console.log(err);
 
-    console.log("FULL ERROR:", err);
+      alert(
+        err.response?.data?.message ||
+        "Error creating task"
+      );
 
-    console.log(
-      "BACKEND RESPONSE:",
-      err.response
-    );
+    } finally {
 
-    alert(
-      err.response?.data?.message ||
-      "Error creating task"
-    );
-
-  } finally {
-
-    setLoading(false);
-  }
-};
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#0f172a] p-6 text-white">
 
       <div className="max-w-6xl mx-auto">
 
+        {/* HEADER */}
         <div className="mb-8">
 
           <h1 className="text-4xl font-bold">
@@ -155,7 +139,6 @@ export default function ProjectTasks() {
           </p>
 
         </div>
-
 
         {/* ONLY ADMIN */}
         {project?.admin?._id ===
@@ -197,9 +180,19 @@ export default function ProjectTasks() {
                 }
                 className="bg-[#0f172a] border border-gray-700 rounded-xl p-4 outline-none"
               >
-                <option>Low</option>
-                <option>Medium</option>
-                <option>High</option>
+
+                <option value="Low">
+                  Low
+                </option>
+
+                <option value="Medium">
+                  Medium
+                </option>
+
+                <option value="High">
+                  High
+                </option>
+
               </select>
 
               <button
@@ -207,9 +200,11 @@ export default function ProjectTasks() {
                 disabled={loading}
                 className="bg-gradient-to-r from-blue-600 to-cyan-500 px-8 py-4 rounded-2xl font-semibold"
               >
+
                 {loading
                   ? "Creating..."
                   : "Create Task"}
+
               </button>
 
             </div>
@@ -217,7 +212,6 @@ export default function ProjectTasks() {
           </div>
 
         )}
-
 
         {/* TASKS */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
