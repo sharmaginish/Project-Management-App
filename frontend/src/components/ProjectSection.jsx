@@ -22,14 +22,13 @@ export default function Projects() {
   const [description, setDescription] = useState("");
 
 
-
-  const token = localStorage.getItem("token");
-
   const role = localStorage.getItem("role");
 
   const user = JSON.parse(
     localStorage.getItem("user")
   );
+  const token = 
+  user?.token;
 
   const navigate = useNavigate();
 
