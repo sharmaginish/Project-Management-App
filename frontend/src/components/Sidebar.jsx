@@ -32,7 +32,7 @@ export default function Sidebar(){
       <div>
 
         <h1 className="text-4xl font-bold mb-10">
-          Nexora
+          AstraDesk
         </h1>
 
         <div className="space-y-4">

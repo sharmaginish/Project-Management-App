@@ -82,7 +82,7 @@ export default function Signup(){
 
           <h1 className="text-5xl font-bold text-white">
 
-            Nexora
+            AstraDesk
 
           </h1>
 
