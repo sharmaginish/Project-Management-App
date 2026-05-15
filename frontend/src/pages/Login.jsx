@@ -1,3 +1,12 @@
+import {
+  signInWithPopup
+} from "firebase/auth";
+
+import {
+  auth,
+  provider
+} from "../firebase";
+
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
@@ -72,6 +81,69 @@ export default function Login() {
     } finally {
 
       setLoading(false);
+
+    }
+
+  };
+
+
+const handleGoogleLogin =
+  async () => {
+
+    try {
+
+      const result =
+        await signInWithPopup(
+          auth,
+          provider
+        );
+
+      const user =
+        result.user;
+
+      // SAVE SESSION
+
+      sessionStorage.setItem(
+        "token",
+        user.accessToken
+      );
+
+      sessionStorage.setItem(
+        "user",
+        JSON.stringify({
+          name:
+            user.displayName,
+
+          email:
+            user.email,
+
+          role:
+            "Member",
+
+          photo:
+            user.photoURL
+        })
+      );
+
+      sessionStorage.setItem(
+        "role",
+        "Member"
+      );
+
+      alert(
+        "Google Login Successful"
+      );
+
+      window.location.href =
+        "/dashboard";
+
+    } catch (err) {
+
+      console.log(err);
+
+      alert(
+        "Google Login Failed"
+      );
 
     }
 
@@ -252,6 +324,27 @@ export default function Login() {
           </motion.button>
 
           {/* SIGNUP */}
+
+          <button
+  onClick={
+    handleGoogleLogin
+  }
+  className="
+    w-full
+    bg-white
+    text-black
+    p-4
+    rounded-2xl
+    font-bold
+    mt-3
+    hover:bg-gray-200
+    transition
+  "
+>
+
+  Continue with Google
+
+</button>
 
           <button
             onClick={() =>
