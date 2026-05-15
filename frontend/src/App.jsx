@@ -9,7 +9,7 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Projects from "./components/ProjectSection";
-import Tasks from "./pages/Tasks";
+import Tasks from "./pages/TaskSection";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
 import Members from "./pages/Members";
