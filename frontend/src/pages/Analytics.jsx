@@ -14,42 +14,46 @@ import {
   Bar,
   XAxis,
   YAxis,
-  CartesianGrid
+  CartesianGrid,
 } from "recharts";
 
 export default function Analytics() {
 
-  const [tasks,setTasks] = useState([]);
+  const [tasks, setTasks] = useState([]);
 
-  const [projects,setProjects] = useState([]);
+  const [projects, setProjects] = useState([]);
 
-  const [loading,setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
-  const token = user?.token;
+  // FIXED TOKEN
+  const token = localStorage.getItem("token");
 
-  useEffect(()=>{
-
-  fetchAnalytics();
-
-  const interval = setInterval(()=>{
+  useEffect(() => {
 
     fetchAnalytics();
 
-  },5000);
+    // AUTO REFRESH
+    const interval = setInterval(() => {
 
-  return ()=> clearInterval(interval);
+      fetchAnalytics();
 
-},[]);
+    }, 5000);
+
+    return () => clearInterval(interval);
+
+  }, []);
 
   const fetchAnalytics = async () => {
 
     try {
 
+      setLoading(true);
+
       const taskRes = await axios.get(
         "https://project-management-app-jtoh.onrender.com/api/tasks",
         {
-          headers:{
-            Authorization:`Bearer ${token}`
+          headers: {
+            Authorization: `Bearer ${token}`
           }
         }
       );
@@ -57,8 +61,8 @@ export default function Analytics() {
       const projectRes = await axios.get(
         "https://project-management-app-jtoh.onrender.com/api/projects",
         {
-          headers:{
-            Authorization:`Bearer ${token}`
+          headers: {
+            Authorization: `Bearer ${token}`
           }
         }
       );
@@ -67,11 +71,11 @@ export default function Analytics() {
 
       setProjects(projectRes.data);
 
-      setLoading(false);
-
-    } catch(err){
+    } catch (err) {
 
       console.log(err);
+
+    } finally {
 
       setLoading(false);
 
@@ -79,51 +83,57 @@ export default function Analytics() {
 
   };
 
+  // TASK COUNTS
+
   const completedTasks =
     tasks.filter(
-      task =>
+      (task) =>
         task.status === "Completed"
     ).length;
 
   const pendingTasks =
     tasks.filter(
-      task =>
+      (task) =>
         task.status === "Pending"
     ).length;
 
   const inProgressTasks =
     tasks.filter(
-      task =>
+      (task) =>
         task.status === "In Progress"
     ).length;
 
+  // PROJECT COUNTS
+
   const completedProjects =
     projects.filter(
-      project =>
+      (project) =>
         project.status === "Completed"
     ).length;
 
   const activeProjects =
     projects.filter(
-      project =>
+      (project) =>
         project.status === "Active"
     ).length;
+
+  // PIE DATA
 
   const taskData = [
 
     {
-      name:"Pending",
-      value:pendingTasks
+      name: "Pending",
+      value: pendingTasks
     },
 
     {
-      name:"In Progress",
-      value:inProgressTasks
+      name: "In Progress",
+      value: inProgressTasks
     },
 
     {
-      name:"Completed",
-      value:completedTasks
+      name: "Completed",
+      value: completedTasks
     }
 
   ];
@@ -131,13 +141,13 @@ export default function Analytics() {
   const projectData = [
 
     {
-      name:"Active",
-      value:activeProjects
+      name: "Active",
+      value: activeProjects
     },
 
     {
-      name:"Completed",
-      value:completedProjects
+      name: "Completed",
+      value: completedProjects
     }
 
   ];
@@ -148,22 +158,25 @@ export default function Analytics() {
     "#22c55e"
   ];
 
+  // PRODUCTIVITY %
+
   const productivity = tasks.length
-  ? Math.round(
-      (completedTasks / tasks.length)
-      * 100
-    )
-  : 0;
+    ? Math.round(
+        (completedTasks / tasks.length) * 100
+      )
+    : 0;
 
-  const progressData = projects.map(
-    (project)=>({
+  // BAR DATA
 
-      name:project.title,
+  const progressData =
+    projects.map((project) => ({
 
-      progress:project.progress || 0
+      name: project.title,
 
-    })
-  );
+      progress:
+        project.progress || 0
+
+    }));
 
   return (
 
@@ -173,15 +186,17 @@ export default function Analytics() {
 
       <div className="md:ml-72 p-4 md:p-10">
 
+        {/* HEADER */}
+
         <div className="mb-10">
 
-          <h1 className="text-3xl md:text-5xlxl font-bold">
+          <h1 className="text-3xl md:text-5xl font-bold break-words">
 
             Analytics
 
           </h1>
 
-          <p className="text-gray-400 mt-3 text-lg">
+          <p className="text-gray-400 mt-3 text-base md:text-lg">
 
             Workspace performance insights
 
@@ -192,7 +207,7 @@ export default function Analytics() {
         {
           loading ? (
 
-            <div className="text-2xl text-gray-400">
+            <div className="text-xl md:text-2xl text-gray-400">
 
               Loading analytics...
 
@@ -202,7 +217,11 @@ export default function Analytics() {
 
             <>
 
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+              {/* STATS */}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
+
+                {/* TOTAL TASKS */}
 
                 <div className="bg-[#111827] p-6 rounded-3xl border border-white/10">
 
@@ -212,13 +231,15 @@ export default function Analytics() {
 
                   </p>
 
-                  <h2 className="text-3xl md:text-5xlxl font-bold mt-4">
+                  <h2 className="text-3xl md:text-5xl font-bold mt-4">
 
                     {tasks.length}
 
                   </h2>
 
                 </div>
+
+                {/* COMPLETED */}
 
                 <div className="bg-[#111827] p-6 rounded-3xl border border-white/10">
 
@@ -228,13 +249,15 @@ export default function Analytics() {
 
                   </p>
 
-                  <h2 className="text-3xl md:text-5xlxl font-bold mt-4 text-green-400">
+                  <h2 className="text-3xl md:text-5xl font-bold mt-4 text-green-400">
 
                     {completedTasks}
 
                   </h2>
 
                 </div>
+
+                {/* PROJECTS */}
 
                 <div className="bg-[#111827] p-6 rounded-3xl border border-white/10">
 
@@ -244,13 +267,15 @@ export default function Analytics() {
 
                   </p>
 
-                  <h2 className="text-3xl md:text-5xlxl font-bold mt-4 text-indigo-400">
+                  <h2 className="text-3xl md:text-5xl font-bold mt-4 text-indigo-400">
 
                     {projects.length}
 
                   </h2>
 
                 </div>
+
+                {/* PRODUCTIVITY */}
 
                 <div className="bg-[#111827] p-6 rounded-3xl border border-white/10">
 
@@ -260,7 +285,7 @@ export default function Analytics() {
 
                   </p>
 
-                  <h2 className="text-3xl md:text-5xlxl font-bold mt-4 text-purple-400">
+                  <h2 className="text-3xl md:text-5xl font-bold mt-4 text-purple-400">
 
                     {productivity}%
 
@@ -270,11 +295,15 @@ export default function Analytics() {
 
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+              {/* PIE CHARTS */}
 
-                <div className="bg-[#111827] p-8 rounded-3xl border border-white/10">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-10">
 
-                  <h2 className="text-3xl font-bold mb-6">
+                {/* TASK DISTRIBUTION */}
+
+                <div className="bg-[#111827] p-5 md:p-8 rounded-3xl border border-white/10">
+
+                  <h2 className="text-2xl md:text-3xl font-bold mb-6">
 
                     Task Distribution
 
@@ -296,12 +325,15 @@ export default function Analytics() {
 
                         {
                           taskData.map(
-                            (entry,index)=>(
+                            (entry, index) => (
 
                               <Cell
                                 key={index}
                                 fill={
-                                  COLORS[index % COLORS.length]
+                                  COLORS[
+                                    index %
+                                    COLORS.length
+                                  ]
                                 }
                               />
 
@@ -319,9 +351,11 @@ export default function Analytics() {
 
                 </div>
 
-                <div className="bg-[#111827] p-8 rounded-3xl border border-white/10">
+                {/* PROJECT STATUS */}
 
-                  <h2 className="text-3xl font-bold mb-6">
+                <div className="bg-[#111827] p-5 md:p-8 rounded-3xl border border-white/10">
+
+                  <h2 className="text-2xl md:text-3xl font-bold mb-6">
 
                     Project Status
 
@@ -343,12 +377,15 @@ export default function Analytics() {
 
                         {
                           projectData.map(
-                            (entry,index)=>(
+                            (entry, index) => (
 
                               <Cell
                                 key={index}
                                 fill={
-                                  COLORS[index % COLORS.length]
+                                  COLORS[
+                                    index %
+                                    COLORS.length
+                                  ]
                                 }
                               />
 
@@ -368,37 +405,49 @@ export default function Analytics() {
 
               </div>
 
-              <div className="bg-[#111827] p-8 rounded-3xl border border-white/10">
+              {/* BAR CHART */}
 
-                <h2 className="text-3xl font-bold mb-8">
+              <div className="bg-[#111827] p-5 md:p-8 rounded-3xl border border-white/10 overflow-x-auto">
+
+                <h2 className="text-2xl md:text-3xl font-bold mb-8">
 
                   Project Progress
 
                 </h2>
 
-                <ResponsiveContainer
-                  width="100%"
-                  height={400}
-                >
+                <div className="min-w-[600px]">
 
-                  <BarChart data={progressData}>
+                  <ResponsiveContainer
+                    width="100%"
+                    height={400}
+                  >
 
-                    <CartesianGrid strokeDasharray="3 3" />
+                    <BarChart
+                      data={progressData}
+                    >
 
-                    <XAxis dataKey="name" />
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                      />
 
-                    <YAxis />
+                      <XAxis
+                        dataKey="name"
+                      />
 
-                    <Tooltip />
+                      <YAxis />
 
-                    <Bar
-                      dataKey="progress"
-                      fill="#6366f1"
-                    />
+                      <Tooltip />
 
-                  </BarChart>
+                      <Bar
+                        dataKey="progress"
+                        fill="#6366f1"
+                      />
 
-                </ResponsiveContainer>
+                    </BarChart>
+
+                  </ResponsiveContainer>
+
+                </div>
 
               </div>
 

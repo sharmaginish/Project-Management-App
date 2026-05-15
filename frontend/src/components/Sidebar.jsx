@@ -11,81 +11,134 @@ import {
   FaTimes
 } from "react-icons/fa";
 
-import { Link, useLocation } from "react-router-dom";
+import {
+  Link,
+  useLocation
+} from "react-router-dom";
 
-import { useState } from "react";
+import {
+  useState,
+  useEffect
+} from "react";
 
-import { motion, AnimatePresence } from "framer-motion";
+import {
+  motion,
+  AnimatePresence
+} from "framer-motion";
 
-export default function Sidebar(){
+export default function Sidebar() {
 
-  const [open,setOpen] = useState(false);
+  const [open, setOpen] =
+    useState(false);
 
-  const location = useLocation();
+  const location =
+    useLocation();
 
   const user = JSON.parse(
     localStorage.getItem("user")
-  );
+  ) || {};
 
-  const role = localStorage.getItem("role");
+  const role =
+    localStorage.getItem("role");
+
+  // AUTO CLOSE ON DESKTOP
+
+  useEffect(() => {
+
+    const handleResize =
+      () => {
+
+        if (
+          window.innerWidth >= 768
+        ) {
+
+          setOpen(false);
+
+        }
+
+      };
+
+    window.addEventListener(
+      "resize",
+      handleResize
+    );
+
+    return () =>
+      window.removeEventListener(
+        "resize",
+        handleResize
+      );
+
+  }, []);
+
+  // LOGOUT
 
   const logout = () => {
 
     localStorage.clear();
 
-    window.location.href = "/login";
+    window.location.href =
+      "/login";
 
   };
+
+  // NAVIGATION
 
   const navItems = [
 
     {
-      name:"Dashboard",
-      path:"/dashboard",
-      icon:<FaHome />
+      name: "Dashboard",
+      path: "/dashboard",
+      icon: <FaHome />
     },
 
     {
-      name:"Projects",
-      path:"/projects",
-      icon:<FaFolderOpen />
+      name: "Projects",
+      path: "/projects",
+      icon: <FaFolderOpen />
     },
 
     {
-      name:"Tasks",
-      path:"/tasks",
-      icon:<FaTasks />
+      name: "Tasks",
+      path: "/tasks",
+      icon: <FaTasks />
     },
 
     {
-      name:"Analytics",
-      path:"/analytics",
-      icon:<FaChartPie />
+      name: "Analytics",
+      path: "/analytics",
+      icon: <FaChartPie />
     },
 
     {
-      name:"Profile",
-      path:"/profile",
-      icon:<FaUserCircle />
+      name: "Profile",
+      path: "/profile",
+      icon: <FaUserCircle />
     },
 
     {
-      name:"Settings",
-      path:"/settings",
-      icon:<FaCog />
+      name: "Settings",
+      path: "/settings",
+      icon: <FaCog />
     }
 
   ];
 
-  if(role === "Admin"){
+  // ADMIN MENU
 
-    navItems.splice(3,0,{
+  if (
+    role === "Admin"
+  ) {
 
-      name:"Members",
-      path:"/members",
-      icon:<FaUsers />
-
-    });
+    navItems.splice(
+      3,
+      0,
+      {
+        name: "Members",
+        path: "/members",
+        icon: <FaUsers />
+      }
+    );
 
   }
 
@@ -93,14 +146,33 @@ export default function Sidebar(){
 
     <>
 
+      {/* MOBILE BUTTON */}
+
       <button
-        onClick={() => setOpen(true)}
-        className="md:hidden fixed top-5 right-5 z-50 bg-[#111827] text-white p-4 rounded-2xl shadow-2xl"
+        onClick={() =>
+          setOpen(true)
+        }
+        className="
+          md:hidden
+          fixed
+          top-5
+          right-5
+          z-50
+          bg-[#111827]
+          text-white
+          p-4
+          rounded-2xl
+          shadow-2xl
+          border
+          border-white/10
+        "
       >
 
         <FaBars className="text-2xl" />
 
       </button>
+
+      {/* BACKDROP */}
 
       <AnimatePresence>
 
@@ -109,15 +181,29 @@ export default function Sidebar(){
 
             <motion.div
 
-              initial={{ opacity:0 }}
+              initial={{
+                opacity: 0
+              }}
 
-              animate={{ opacity:1 }}
+              animate={{
+                opacity: 1
+              }}
 
-              exit={{ opacity:0 }}
+              exit={{
+                opacity: 0
+              }}
 
-              className="fixed inset-0 bg-black/60 z-40 md:hidden"
+              className="
+                fixed
+                inset-0
+                bg-black/60
+                z-40
+                md:hidden
+              "
 
-              onClick={() => setOpen(false)}
+              onClick={() =>
+                setOpen(false)
+              }
 
             />
 
@@ -126,25 +212,35 @@ export default function Sidebar(){
 
       </AnimatePresence>
 
+      {/* SIDEBAR */}
+
       <motion.div
 
         initial={{
-          x:window.innerWidth < 768
-          ? 300
-          : -300
+          x:
+            window.innerWidth < 768
+              ? 300
+              : -300
         }}
 
         animate={{
-          x:0
+          x:
+            open ||
+            window.innerWidth >= 768
+              ? 0
+              : 300
         }}
 
         transition={{
-          duration:0.4
+          duration: 0.3
         }}
 
-        className={`
+        className="
           fixed
           top-0
+          right-0
+          md:left-0
+          md:right-auto
           h-screen
           w-72
           bg-[#111827]/95
@@ -153,40 +249,42 @@ export default function Sidebar(){
           p-6
           flex
           flex-col
-          justify-between overflow-y-auto
-          border-white/10
-          z-50
-          transform
-          transition-transform
-          duration-300
-          shadow-2xl
-
-          right-0
+          justify-between
+          overflow-y-auto
           border-l
-
-          md:left-0
-          md:right-auto
           md:border-r
           md:border-l-0
-
-          ${
-            open
-            ? "translate-x-0"
-            : "translate-x-full md:-translate-x-full"
-          }
-
-          md:translate-x-0
-        `}
+          border-white/10
+          z-50
+          shadow-2xl
+        "
 
       >
 
+        {/* TOP */}
+
         <div>
 
-          <div className="flex justify-between items-center mb-10">
+          {/* HEADER */}
+
+          <div className="
+            flex
+            justify-between
+            items-center
+            mb-10
+          ">
 
             <div>
 
-              <h1 className="text-4xl font-black bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">
+              <h1 className="
+                text-4xl
+                font-black
+                bg-gradient-to-r
+                from-indigo-400
+                to-purple-500
+                bg-clip-text
+                text-transparent
+              ">
 
                 AstraDesk
 
@@ -200,9 +298,18 @@ export default function Sidebar(){
 
             </div>
 
+            {/* CLOSE */}
+
             <button
-              onClick={() => setOpen(false)}
-              className="md:hidden bg-[#1f2937] p-3 rounded-xl"
+              onClick={() =>
+                setOpen(false)
+              }
+              className="
+                md:hidden
+                bg-[#1f2937]
+                p-3
+                rounded-xl
+              "
             >
 
               <FaTimes />
@@ -211,80 +318,115 @@ export default function Sidebar(){
 
           </div>
 
+          {/* NAV ITEMS */}
+
           <div className="space-y-3">
 
             {
-              navItems.map((item,index)=>(
+              navItems.map(
+                (
+                  item,
+                  index
+                ) => (
 
-                <Link
-                  to={item.path}
-                  key={index}
-                  onClick={() => setOpen(false)}
-                >
-
-                  <motion.div
-
-                    whileHover={{
-                      scale:1.03,
-                      x:window.innerWidth < 768
-                      ? -5
-                      : 5
-                    }}
-
-                    whileTap={{
-                      scale:0.98
-                    }}
-
-                    className={`
-                      flex
-                      items-center
-                      gap-4
-                      p-4
-                      rounded-2xl
-                      transition-all
-                      duration-300
-                      group
-                      ${
-                        location.pathname === item.path
-                        ? "bg-gradient-to-r from-indigo-500 to-purple-600 shadow-lg"
-                        : "hover:bg-[#1f2937]"
-                      }
-                    `}
-
+                  <Link
+                    to={item.path}
+                    key={index}
+                    onClick={() =>
+                      setOpen(false)
+                    }
                   >
 
-                    <div className="text-xl group-hover:scale-110 transition-transform">
+                    <motion.div
 
-                      {item.icon}
+                      whileHover={{
+                        scale: 1.02,
+                        x:
+                          window.innerWidth < 768
+                            ? -3
+                            : 3
+                      }}
 
-                    </div>
+                      whileTap={{
+                        scale: 0.98
+                      }}
 
-                    <span className="text-lg font-semibold">
+                      className={`
+                        flex
+                        items-center
+                        gap-4
+                        p-4
+                        rounded-2xl
+                        transition-all
+                        duration-300
+                        group
+                        ${
+                          location.pathname ===
+                          item.path
+                            ? "bg-gradient-to-r from-indigo-500 to-purple-600 shadow-lg"
+                            : "hover:bg-[#1f2937]"
+                        }
+                      `}
 
-                      {item.name}
+                    >
 
-                    </span>
+                      {/* ICON */}
 
-                  </motion.div>
+                      <div className="
+                        text-xl
+                        group-hover:scale-110
+                        transition-transform
+                      ">
 
-                </Link>
+                        {item.icon}
 
-              ))
+                      </div>
+
+                      {/* NAME */}
+
+                      <span className="
+                        text-lg
+                        font-semibold
+                      ">
+
+                        {item.name}
+
+                      </span>
+
+                    </motion.div>
+
+                  </Link>
+
+                )
+              )
             }
 
           </div>
 
         </div>
 
-        <div className="pb-4">
+        {/* BOTTOM */}
+
+        <div className="pt-8">
+
+          {/* USER CARD */}
 
           <motion.div
 
             whileHover={{
-              scale:1.02
+              scale: 1.01
             }}
 
-            className="bg-gradient-to-r from-[#1f2937] to-[#111827] p-4 rounded-3xl border border-white/10 shadow-xl"
+            className="
+              bg-gradient-to-r
+              from-[#1f2937]
+              to-[#111827]
+              p-5
+              rounded-3xl
+              border
+              border-white/10
+              shadow-xl
+            "
 
           >
 
@@ -294,13 +436,28 @@ export default function Sidebar(){
 
             </p>
 
-            <h2 className="text-xl font-bold mt-2 break-words">
+            <h2 className="
+              text-xl
+              font-bold
+              mt-2
+              break-words
+            ">
 
-              {user?.name}
+              {user?.name || "User"}
 
             </h2>
 
-            <div className="mt-3 inline-block bg-indigo-500/20 text-indigo-400 px-4 py-2 rounded-full text-sm font-bold">
+            <div className="
+              mt-3
+              inline-block
+              bg-indigo-500/20
+              text-indigo-400
+              px-4
+              py-2
+              rounded-full
+              text-sm
+              font-bold
+            ">
 
               {role}
 
@@ -308,19 +465,39 @@ export default function Sidebar(){
 
           </motion.div>
 
+          {/* LOGOUT */}
+
           <motion.button
 
             whileHover={{
-              scale:1.03
+              scale: 1.02
             }}
 
             whileTap={{
-              scale:0.98
+              scale: 0.98
             }}
 
             onClick={logout}
 
-            className="mt-3 w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 transition-all duration-300 p-4 rounded-2xl flex items-center justify-center gap-3 font-bold shadow-xl"
+            className="
+              mt-4
+              w-full
+              bg-gradient-to-r
+              from-red-500
+              to-red-600
+              hover:from-red-600
+              hover:to-red-700
+              transition-all
+              duration-300
+              p-4
+              rounded-2xl
+              flex
+              items-center
+              justify-center
+              gap-3
+              font-bold
+              shadow-xl
+            "
 
           >
 

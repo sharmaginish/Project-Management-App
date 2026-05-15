@@ -1,26 +1,46 @@
 import { useParams } from "react-router-dom";
+
 import { useEffect, useState } from "react";
+
 import axios from "axios";
+
+import { motion } from "framer-motion";
+
+import {
+  FaUsers,
+  FaCheck
+} from "react-icons/fa";
 
 export default function ProjectDetails() {
 
   const { id } = useParams();
 
-  const [users, setUsers] = useState([]);
-  const [project, setProject] = useState(null);
+  const [users, setUsers] =
+    useState([]);
 
-  const [selectedMembers, setSelectedMembers] = useState([]);
+  const [project, setProject] =
+    useState(null);
 
-  const [loading, setLoading] = useState(false);
+  const [selectedMembers,
+    setSelectedMembers] =
+    useState([]);
 
-  const token = user?.token;
+  const [loading, setLoading] =
+    useState(false);
+
+  // FIXED TOKEN
+  const token =
+    localStorage.getItem("token");
 
   const userInfo =
-    JSON.parse(localStorage.getItem("user"));
+    JSON.parse(
+      localStorage.getItem("user")
+    ) || {};
 
-  const currentUserId = userInfo?._id ||
-  userInfo?.id ||
-  "";
+  const currentUserId =
+    userInfo?._id ||
+    userInfo?.id ||
+    "";
 
   useEffect(() => {
 
@@ -30,262 +50,442 @@ export default function ProjectDetails() {
 
   }, []);
 
-  const fetchUsers = async () => {
+  // FETCH PROJECT
 
-    try {
+  const fetchProject =
+    async () => {
 
-      const res = await axios.get(
-        "https://project-management-app-jtoh.onrender.com/api/projects/users",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      try {
 
-      setUsers(res.data);
+        const res =
+          await axios.get(
+            `https://project-management-app-jtoh.onrender.com/api/projects/${id}`,
+            {
+              headers: {
+                Authorization:
+                  `Bearer ${token}`,
+              },
+            }
+          );
 
-    } catch (err) {
+        setProject(res.data);
 
-      console.log(err);
+        setSelectedMembers(
+          res.data.members?.map(
+            (member) =>
+              member._id
+          ) || []
+        );
 
-      alert("Failed to load users");
-    }
-  };
+      } catch (err) {
 
-  const fetchProjects = async () => {
+        console.log(err);
 
-  try {
+      }
 
-    setLoading(true);
+    };
 
-    const res =
-      await axios.get(
-        "https://project-management-app-jtoh.onrender.com/api/projects",
-        {
-          headers: {
-            Authorization:
-              `Bearer ${token}`,
-          },
-        }
-      );
+  // FETCH USERS
 
-    setProjects(res.data);
+  const fetchUsers =
+    async () => {
 
-  } catch (err) {
+      try {
 
-    console.log(err);
+        const res =
+          await axios.get(
+            "https://project-management-app-jtoh.onrender.com/api/projects/users",
+            {
+              headers: {
+                Authorization:
+                  `Bearer ${token}`,
+              },
+            }
+          );
 
-  } finally {
+        setUsers(res.data);
 
-    setLoading(false);
-  }
-};
+      } catch (err) {
 
-  const handleSelect = (userId) => {
+        console.log(err);
 
-    // ONLY ADMIN CAN SELECT
-    if (
-      String(project?.admin?._id) !== String(currentUserId)
-    ) {
-      return;
-    }
+        alert(
+          "Failed to load users"
+        );
 
-    if (selectedMembers.includes(userId)) {
+      }
 
-      setSelectedMembers(
-        selectedMembers.filter(
-          (memberId) =>
-            memberId !== userId
+    };
+
+  // SELECT MEMBERS
+
+  const handleSelect =
+    (userId) => {
+
+      // ONLY ADMIN CAN SELECT
+
+      if (
+        String(project?.admin?._id) !==
+        String(currentUserId)
+      ) {
+
+        return;
+
+      }
+
+      if (
+        selectedMembers.includes(
+          userId
         )
-      );
+      ) {
 
-    } else {
+        setSelectedMembers(
+          selectedMembers.filter(
+            (memberId) =>
+              memberId !== userId
+          )
+        );
 
-      setSelectedMembers([
-        ...selectedMembers,
-        userId,
-      ]);
-    }
-  };
+      } else {
 
-  const saveMembers = async () => {
+        setSelectedMembers([
+          ...selectedMembers,
+          userId,
+        ]);
 
-    try {
+      }
 
-      setLoading(true);
+    };
 
-      const res = await axios.put(
-        `https://project-management-app-jtoh.onrender.com/api/projects/${id}/members`,
-        {
-          members: selectedMembers,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+  // SAVE MEMBERS
+
+  const saveMembers =
+    async () => {
+
+      try {
+
+        setLoading(true);
+
+        await axios.put(
+          `https://project-management-app-jtoh.onrender.com/api/projects/${id}/members`,
+          {
+            members:
+              selectedMembers,
           },
-        }
-      );
+          {
+            headers: {
+              Authorization:
+                `Bearer ${token}`,
+            },
+          }
+        );
 
-      console.log(res.data);
+        alert(
+          "Members Saved Successfully"
+        );
 
-      alert("Members Saved Successfully");
+        fetchProject();
 
-    } catch (err) {
+      } catch (err) {
 
-      console.log(err);
+        console.log(err);
 
-      alert(
-        err.response?.data?.message ||
-        "Error saving members"
-      );
+        alert(
+          err.response?.data
+            ?.message ||
+          "Error saving members"
+        );
 
-    } finally {
+      } finally {
 
-      setLoading(false);
-    }
-  };
+        setLoading(false);
+
+      }
+
+    };
 
   return (
-    <div className="min-h-screen bg-[#0f172a] p-6 text-white">
 
-      <div className="max-w-5xl mx-auto">
+    <div className="min-h-screen bg-[#0f172a] text-white p-4 md:p-6">
 
-        {/* Header */}
+      <div className="max-w-6xl mx-auto">
+
+        {/* HEADER */}
+
         <div className="mb-8">
 
-          <h1 className="text-4xl font-bold">
+          <h1 className="text-3xl md:text-5xl font-bold break-words">
+
             Project Members
+
           </h1>
 
-          <p className="text-gray-400 mt-2">
-            Manage your team professionally
+          <p className="text-gray-400 mt-3 text-sm md:text-base">
+
+            Manage your project team professionally
+
           </p>
 
         </div>
 
-        {/* Main Card */}
-        <div className="bg-[#1e293b] rounded-3xl shadow-2xl border border-gray-700 p-8">
+        {/* MAIN CARD */}
 
-          {/* Top */}
-          <div className="flex items-center justify-between mb-8">
+        <motion.div
 
-            <h2 className="text-2xl font-semibold">
-              Team Members
-            </h2>
+          initial={{
+            opacity: 0,
+            y: 20
+          }}
 
-            <div className="bg-blue-600 px-4 py-2 rounded-xl text-sm font-medium">
+          animate={{
+            opacity: 1,
+            y: 0
+          }}
+
+          className="
+            bg-[#1e293b]
+            rounded-3xl
+            shadow-2xl
+            border
+            border-gray-700
+            p-5
+            md:p-8
+          "
+
+        >
+
+          {/* TOP */}
+
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+
+            <div>
+
+              <h2 className="text-2xl md:text-3xl font-semibold break-words">
+
+                Team Members
+
+              </h2>
+
+              <p className="text-gray-400 mt-2">
+
+                Select users for this project
+
+              </p>
+
+            </div>
+
+            <div className="
+              bg-blue-600
+              px-4
+              py-2
+              rounded-xl
+              text-sm
+              font-medium
+              w-fit
+            ">
+
               {selectedMembers.length} Selected
+
             </div>
 
           </div>
 
           {/* USERS */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-            {users.map((user) => (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
-              <div
-                key={user._id}
-                onClick={() =>
-                  handleSelect(user._id)
-                }
-                className={`rounded-2xl p-5 border transition-all duration-300 ${
-                  project?.admin?._id ===
-                  currentUserId
-                    ? "cursor-pointer"
-                    : "cursor-not-allowed opacity-80"
-                } ${
-                  selectedMembers.includes(
-                    user._id
-                  )
-                    ? "bg-blue-600 border-blue-400 scale-[1.02]"
-                    : "bg-[#0f172a] border-gray-700 hover:border-blue-500"
-                }`}
-              >
+            {
+              users.map((user) => (
 
-                <div className="flex items-center gap-4">
+                <motion.div
 
-                  {/* Avatar */}
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-r from-cyan-400 to-blue-600 flex items-center justify-center text-xl font-bold">
+                  whileHover={{
+                    scale: 1.01
+                  }}
 
-                    {user.name
-                      ?.charAt(0)
-                      .toUpperCase()}
+                  key={user._id}
 
-                  </div>
-
-                  {/* USER INFO */}
-                  <div className="flex-1">
-
-                    <h3 className="text-lg font-semibold">
-                      {user.name}
-                    </h3>
-
-                    <p className="text-gray-300 text-sm">
-                      {user.email}
-                    </p>
-
-                  </div>
-
-                  {/* CHECKBOX */}
-                  <input
-                    type="checkbox"
-                    checked={selectedMembers.includes(
+                  onClick={() =>
+                    handleSelect(
                       user._id
-                    )}
-                    readOnly
-                    className="w-5 h-5 accent-blue-500"
-                  />
+                    )
+                  }
 
-                </div>
+                  className={`
+                    rounded-2xl
+                    p-5
+                    border
+                    transition-all
+                    duration-300
+                    ${
+                      String(
+                        project?.admin?._id
+                      ) ===
+                      String(
+                        currentUserId
+                      )
+                        ? "cursor-pointer"
+                        : "cursor-not-allowed opacity-80"
+                    }
+                    ${
+                      selectedMembers.includes(
+                        user._id
+                      )
+                        ? "bg-blue-600 border-blue-400"
+                        : "bg-[#0f172a] border-gray-700 hover:border-blue-500"
+                    }
+                  `}
 
-              </div>
+                >
 
-            ))}
+                  <div className="flex items-center gap-4">
+
+                    {/* AVATAR */}
+
+                    <div className="
+                      w-14
+                      h-14
+                      rounded-full
+                      bg-gradient-to-r
+                      from-cyan-400
+                      to-blue-600
+                      flex
+                      items-center
+                      justify-center
+                      text-xl
+                      font-bold
+                      flex-shrink-0
+                    ">
+
+                      {
+                        user.name
+                          ?.charAt(0)
+                          .toUpperCase()
+                      }
+
+                    </div>
+
+                    {/* USER INFO */}
+
+                    <div className="flex-1 min-w-0">
+
+                      <h3 className="text-lg font-semibold break-words">
+
+                        {user.name}
+
+                      </h3>
+
+                      <p className="text-gray-300 text-sm break-all">
+
+                        {user.email}
+
+                      </p>
+
+                    </div>
+
+                    {/* CHECK */}
+
+                    <div className={`
+                      w-7
+                      h-7
+                      rounded-full
+                      flex
+                      items-center
+                      justify-center
+                      border
+                      flex-shrink-0
+                      ${
+                        selectedMembers.includes(
+                          user._id
+                        )
+                          ? "bg-white text-blue-600 border-white"
+                          : "border-gray-500"
+                      }
+                    `}>
+
+                      {
+                        selectedMembers.includes(
+                          user._id
+                        ) && <FaCheck />
+                      }
+
+                    </div>
+
+                  </div>
+
+                </motion.div>
+
+              ))
+            }
 
           </div>
 
           {/* EMPTY */}
-          {users.length === 0 && (
 
-            <div className="text-center py-20 text-gray-400">
-              No users found
-            </div>
+          {
+            users.length === 0 && (
 
-          )}
+              <div className="text-center py-20 text-gray-400">
 
-          {/* ONLY ADMIN CAN SEE BUTTON */}
-            {String(project?.admin?._id) ===
-            String(currentUserId) && (
+                No users found
 
-            <div className="mt-10 flex justify-end">
+              </div>
 
-             
-              <button
-                onClick={saveMembers}
-                disabled={loading}
-                className={`px-8 py-3 rounded-2xl font-semibold shadow-2xl transition-all duration-300 ${
-                  loading
-                    ? "bg-gray-600 cursor-not-allowed"
-                    : "bg-gradient-to-r from-blue-600 to-cyan-500 hover:scale-105"
-                }`}
-              >
+            )
+          }
 
-                {loading
-                  ? "Saving..."
-                  : "Save Members"}
+          {/* SAVE BUTTON */}
 
-              </button>
+          {
+            String(
+              project?.admin?._id
+            ) ===
+            String(
+              currentUserId
+            ) && (
 
-            </div>
+              <div className="mt-10 flex justify-end">
 
-          )}
+                <button
+                  onClick={
+                    saveMembers
+                  }
+                  disabled={loading}
+                  className={`
+                    px-8
+                    py-3
+                    rounded-2xl
+                    font-semibold
+                    shadow-2xl
+                    transition-all
+                    duration-300
+                    ${
+                      loading
+                        ? "bg-gray-600 cursor-not-allowed"
+                        : "bg-gradient-to-r from-blue-600 to-cyan-500 hover:scale-105"
+                    }
+                  `}
+                >
 
-        </div>
+                  {
+                    loading
+                      ? "Saving..."
+                      : "Save Members"
+                  }
+
+                </button>
+
+              </div>
+
+            )
+          }
+
+        </motion.div>
 
       </div>
 
     </div>
+
   );
+
 }

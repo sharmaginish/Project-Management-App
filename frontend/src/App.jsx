@@ -1,25 +1,47 @@
 import {
   BrowserRouter,
   Routes,
-  Route
+  Route,
+  Navigate
 } from "react-router-dom";
 
 import Login from "./pages/Login";
+
 import Signup from "./pages/Signup";
+
 import Dashboard from "./pages/Dashboard";
+
 import Profile from "./pages/Profile";
 
 import Projects from "./components/ProjectSection";
 
 import Tasks from "./pages/Tasks";
+
 import Analytics from "./pages/Analytics";
+
 import Settings from "./pages/Settings";
+
 import Members from "./pages/Members";
 
 import ProjectDetails from "./components/ProjectDetails";
 
-// IMPORT TASK SECTION
 import TaskSection from "./components/TaskSection";
+
+// PROTECTED ROUTE
+function ProtectedRoute({ children }) {
+
+  const token =
+    localStorage.getItem("token");
+
+  if (!token) {
+
+    return <Navigate to="/login" replace />;
+
+  }
+
+  return children;
+
+}
 
 export default function App() {
 
@@ -29,66 +51,159 @@ export default function App() {
 
       <Routes>
 
-        <Route
-          path="/"
-          element={<Dashboard />}
-        />
-
-        <Route
-          path="/dashboard"
-          element={<Dashboard />}
-        />
+        {/* LOGIN */}
 
         <Route
           path="/login"
           element={<Login />}
         />
 
+        {/* SIGNUP */}
+
         <Route
           path="/signup"
           element={<Signup />}
         />
 
+        {/* ROOT REDIRECT */}
+
+        <Route
+          path="/"
+          element={
+            <Navigate
+              to="/dashboard"
+              replace
+            />
+          }
+        />
+
+        {/* DASHBOARD */}
+
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+
+              <Dashboard />
+
+            </ProtectedRoute>
+          }
+        />
+
+        {/* PROFILE */}
+
         <Route
           path="/profile"
-          element={<Profile />}
+          element={
+            <ProtectedRoute>
+
+              <Profile />
+
+            </ProtectedRoute>
+          }
         />
+
+        {/* TASKS */}
 
         <Route
           path="/tasks"
-          element={<Tasks />}
+          element={
+            <ProtectedRoute>
+
+              <Tasks />
+
+            </ProtectedRoute>
+          }
         />
+
+        {/* PROJECTS */}
 
         <Route
           path="/projects"
-          element={<Projects />}
+          element={
+            <ProtectedRoute>
+
+              <Projects />
+
+            </ProtectedRoute>
+          }
         />
+
+        {/* ANALYTICS */}
 
         <Route
           path="/analytics"
-          element={<Analytics />}
+          element={
+            <ProtectedRoute>
+
+              <Analytics />
+
+            </ProtectedRoute>
+          }
         />
+
+        {/* SETTINGS */}
 
         <Route
           path="/settings"
-          element={<Settings />}
+          element={
+            <ProtectedRoute>
+
+              <Settings />
+
+            </ProtectedRoute>
+          }
         />
+
+        {/* MEMBERS */}
 
         <Route
           path="/members"
-          element={<Members />}
+          element={
+            <ProtectedRoute>
+
+              <Members />
+
+            </ProtectedRoute>
+          }
         />
 
         {/* PROJECT DETAILS */}
+
         <Route
           path="/project/:id"
-          element={<ProjectDetails />}
+          element={
+            <ProtectedRoute>
+
+              <ProjectDetails />
+
+            </ProtectedRoute>
+          }
         />
 
         {/* PROJECT TASKS */}
+
         <Route
           path="/project/:id/tasks"
-          element={<TaskSection />}
+          element={
+            <ProtectedRoute>
+
+              <TaskSection />
+
+            </ProtectedRoute>
+          }
+        />
+
+        {/* UNKNOWN ROUTE */}
+
+        <Route
+          path="*"
+          element={
+            <Navigate
+              to="/dashboard"
+              replace
+            />
+          }
         />
 
       </Routes>
@@ -96,4 +211,5 @@ export default function App() {
     </BrowserRouter>
 
   );
+
 }
