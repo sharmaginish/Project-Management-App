@@ -13,21 +13,31 @@ import {
   FaUserShield
 } from "react-icons/fa";
 
-export default function Signup(){
+export default function Signup() {
 
   const navigate = useNavigate();
 
-  const [name,setName] = useState("");
+  const [name, setName] = useState("");
 
-  const [email,setEmail] = useState("");
+  const [email, setEmail] = useState("");
 
-  const [password,setPassword] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [role,setRole] = useState("Member");
+  const [role, setRole] = useState("Member");
+
+  const [loading, setLoading] = useState(false);
 
   const handleSignup = async () => {
 
-    try{
+    if (!name || !email || !password) {
+
+      return alert("Please fill all fields");
+
+    }
+
+    try {
+
+      setLoading(true);
 
       await axios.post(
         "https://project-management-app-jtoh.onrender.com/api/auth/register",
@@ -43,12 +53,18 @@ export default function Signup(){
 
       navigate("/login");
 
-    }catch(err){
+    } catch (err) {
+
+      console.log(err);
 
       alert(
         err.response?.data?.message ||
         "Signup Failed"
       );
+
+    } finally {
+
+      setLoading(false);
 
     }
 
@@ -56,37 +72,49 @@ export default function Signup(){
 
   return (
 
-    <div className="min-h-screen bg-[#0f172a] flex items-center justify-center p-6">
+    <div className="min-h-screen bg-[#0f172a] flex items-center justify-center p-4 sm:p-6">
 
       <motion.div
 
         initial={{
-          opacity:0,
-          y:30
+          opacity: 0,
+          y: 30
         }}
 
         animate={{
-          opacity:1,
-          y:0
+          opacity: 1,
+          y: 0
         }}
 
         transition={{
-          duration:0.5
+          duration: 0.5
         }}
 
-        className="bg-[#111827] w-full max-w-md rounded-[35px] p-4 md:p-10 border border-white/10 shadow-2xl"
+        className="
+          bg-[#111827]
+          w-full
+          max-w-md
+          rounded-[30px]
+          p-6
+          sm:p-10
+          border
+          border-white/10
+          shadow-2xl
+        "
 
       >
 
-        <div className="text-center mb-10">
+        {/* HEADER */}
 
-          <h1 className="text-3xl md:text-5xlxl font-bold text-white">
+        <div className="text-center mb-8">
+
+          <h1 className="text-3xl sm:text-5xl font-bold text-white">
 
             AstraDesk
 
           </h1>
 
-          <p className="text-gray-400 mt-3">
+          <p className="text-gray-400 mt-3 text-sm sm:text-base">
 
             Create Your Workspace
 
@@ -94,7 +122,11 @@ export default function Signup(){
 
         </div>
 
+        {/* FORM */}
+
         <div className="space-y-5">
+
+          {/* NAME */}
 
           <div className="bg-[#1f2937] rounded-2xl flex items-center px-4">
 
@@ -103,13 +135,22 @@ export default function Signup(){
             <input
               type="text"
               placeholder="Enter Name"
-              className="bg-transparent w-full p-4 outline-none text-white"
-              onChange={(e)=>
+              value={name}
+              onChange={(e) =>
                 setName(e.target.value)
               }
+              className="
+                bg-transparent
+                w-full
+                p-4
+                outline-none
+                text-white
+              "
             />
 
           </div>
+
+          {/* EMAIL */}
 
           <div className="bg-[#1f2937] rounded-2xl flex items-center px-4">
 
@@ -118,13 +159,22 @@ export default function Signup(){
             <input
               type="email"
               placeholder="Enter Email"
-              className="bg-transparent w-full p-4 outline-none text-white"
-              onChange={(e)=>
+              value={email}
+              onChange={(e) =>
                 setEmail(e.target.value)
               }
+              className="
+                bg-transparent
+                w-full
+                p-4
+                outline-none
+                text-white
+              "
             />
 
           </div>
+
+          {/* PASSWORD */}
 
           <div className="bg-[#1f2937] rounded-2xl flex items-center px-4">
 
@@ -133,13 +183,22 @@ export default function Signup(){
             <input
               type="password"
               placeholder="Enter Password"
-              className="bg-transparent w-full p-4 outline-none text-white"
-              onChange={(e)=>
+              value={password}
+              onChange={(e) =>
                 setPassword(e.target.value)
               }
+              className="
+                bg-transparent
+                w-full
+                p-4
+                outline-none
+                text-white
+              "
             />
 
           </div>
+
+          {/* ROLE */}
 
           <div className="bg-[#1f2937] rounded-2xl flex items-center px-4">
 
@@ -147,10 +206,16 @@ export default function Signup(){
 
             <select
               value={role}
-              onChange={(e)=>
+              onChange={(e) =>
                 setRole(e.target.value)
               }
-              className="bg-transparent w-full p-4 outline-none text-white"
+              className="
+                bg-transparent
+                w-full
+                p-4
+                outline-none
+                text-white
+              "
             >
 
               <option
@@ -171,31 +236,55 @@ export default function Signup(){
 
           </div>
 
+          {/* SIGNUP BUTTON */}
+
           <motion.button
 
             whileHover={{
-              scale:1.03
+              scale: 1.02
             }}
 
             whileTap={{
-              scale:0.98
+              scale: 0.98
             }}
 
             onClick={handleSignup}
 
-            className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 p-4 rounded-2xl text-white font-bold text-lg shadow-xl"
+            disabled={loading}
+
+            className="
+              w-full
+              bg-gradient-to-r
+              from-indigo-500
+              to-purple-600
+              p-4
+              rounded-2xl
+              text-white
+              font-bold
+              text-lg
+              shadow-xl
+              disabled:opacity-50
+            "
 
           >
 
-            Signup
+            {loading ? "Creating Account..." : "Signup"}
 
           </motion.button>
+
+          {/* LOGIN */}
 
           <button
             onClick={() =>
               navigate("/login")
             }
-            className="text-indigo-400 w-full mt-3"
+            className="
+              text-indigo-400
+              w-full
+              mt-2
+              text-sm
+              sm:text-base
+            "
           >
 
             Already have an account? Login
