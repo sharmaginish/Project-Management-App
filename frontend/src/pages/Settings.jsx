@@ -309,7 +309,7 @@ export default function Settings() {
 
             </div>
 
-            <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+            <div className="flex justify-between items-center">
 
               <div>
 
@@ -392,7 +392,7 @@ export default function Settings() {
 
             <div className="space-y-6">
 
-              <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+              <div className="flex justify-between items-center">
 
                 <div>
 
@@ -437,7 +437,7 @@ export default function Settings() {
 
               </div>
 
-              <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+              <div className="flex justify-between items-center">
 
                 <div>
 
@@ -482,7 +482,7 @@ export default function Settings() {
 
               </div>
 
-              <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+              <div className="flex justify-between items-center">
 
                 <div>
 

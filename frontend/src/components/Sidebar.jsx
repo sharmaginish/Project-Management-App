@@ -95,7 +95,7 @@ export default function Sidebar(){
 
       <button
         onClick={() => setOpen(true)}
-        className="md:hidden fixed top-5 left-5 z-50 bg-[#111827] text-white p-4 rounded-2xl shadow-2xl"
+        className="md:hidden fixed top-5 right-5 z-50 bg-[#111827] text-white p-4 rounded-2xl shadow-2xl"
       >
 
         <FaBars className="text-2xl" />
@@ -128,7 +128,7 @@ export default function Sidebar(){
 
       <motion.div
 
-        initial={{ x:-300 }}
+        initial={{ x:300 }}
 
         animate={{
           x:0
@@ -141,7 +141,7 @@ export default function Sidebar(){
         className={`
           fixed
           top-0
-          left-0
+          right-0
           h-screen
           w-72
           bg-[#111827]/95
@@ -151,14 +151,14 @@ export default function Sidebar(){
           flex
           flex-col
           justify-between
-          border-r
+          border-l
           border-white/10
           z-50
           transform
           transition-transform
           duration-300
           shadow-2xl
-          ${open ? "translate-x-0" : "-translate-x-full"}
+          ${open ? "translate-x-0" : "translate-x-full"}
           md:translate-x-0
         `}
 
@@ -166,7 +166,7 @@ export default function Sidebar(){
 
         <div>
 
-          <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-10">
+          <div className="flex justify-between items-center mb-10">
 
             <div>
 
@@ -210,7 +210,7 @@ export default function Sidebar(){
 
                     whileHover={{
                       scale:1.03,
-                      x:5
+                      x:-5
                     }}
 
                     whileTap={{

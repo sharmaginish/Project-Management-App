@@ -184,7 +184,7 @@ export default function Tasks() {
 
       <div className="md:ml-72 p-4 md:p-10">
 
-        <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-10">
+        <div className="flex justify-between items-center mb-10">
 
           <div>
 
@@ -366,7 +366,7 @@ export default function Tasks() {
 
                   </div>
 
-                  <div className="mt-6 flex flex-col md:flex-row justify-between md:items-center gap-4">
+                  <div className="mt-6 flex justify-between items-center">
 
                     <div className="bg-indigo-500/20 text-indigo-400 px-4 py-2 rounded-full">
 
