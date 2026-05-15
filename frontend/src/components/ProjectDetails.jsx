@@ -1,7 +1,9 @@
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-export default function ProjectDetails({ projectId }) {
+export default function ProjectDetails() {
+  const { id } = useParams();
   const [users, setUsers] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -48,7 +50,7 @@ export default function ProjectDetails({ projectId }) {
     try {
       setLoading(true);
 
-      console.log("PROJECT ID:", projectId);
+      console.log("PROJECT ID:", id);
 
       console.log(
         "SELECTED MEMBERS:",
