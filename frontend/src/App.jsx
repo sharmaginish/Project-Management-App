@@ -23,9 +23,7 @@ function App() {
           path="/"
           element={
   token ? (
-    <div className="text-3xl p-10">
-      Login Success
-    </div>
+    <Dashboard />
   ) : (
     <Navigate to="/login" />
   )
