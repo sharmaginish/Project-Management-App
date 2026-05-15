@@ -23,7 +23,7 @@ export default function Signup(){
 
   const [password,setPassword] = useState("");
 
-  const role = "User";
+  const [role,setRole] = useState("Member");
 
   const handleSignup = async () => {
 
@@ -154,10 +154,10 @@ export default function Signup(){
             >
 
               <option
-                value="User"
+                value="Member"
                 className="text-black"
               >
-                User
+                Member
               </option>
 
               <option

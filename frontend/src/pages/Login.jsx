@@ -20,7 +20,7 @@ export default function Login() {
 
   const [password, setPassword] = useState("");
 
-  const [role, setRole] = useState("User");
+  const [role, setRole] = useState("Member");
 
   const handleLogin = async () => {
 
@@ -150,10 +150,10 @@ export default function Login() {
             >
 
               <option
-                value="User"
+                value="Member"
                 className="text-black"
               >
-                User
+                Member
               </option>
 
               <option
