@@ -1,13 +1,16 @@
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
-export default function Signup({ setShowSignup }) {
+export default function Signup() {
 
   const [name, setName] = useState("");
 
   const [email, setEmail] = useState("");
 
   const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
 
   const signupUser = async () => {
 
@@ -25,9 +28,8 @@ export default function Signup({ setShowSignup }) {
       );
 
       alert("Signup Successful");
-      
-      setShowSignup(false);
-      
+
+      navigate("/login");
 
     } catch (err) {
 

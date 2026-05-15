@@ -1,4 +1,9 @@
-import { useState } from "react";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
@@ -8,50 +13,36 @@ function App() {
 
   const token = localStorage.getItem("token");
 
-  const [showSignup, setShowSignup] = useState(false);
-
-  if (token) {
-    return <Dashboard />;
-  }
-
   return (
 
-    <div>
+    <BrowserRouter>
 
-      {showSignup ? (
+      <Routes>
 
-        <div>
+        <Route
+          path="/"
+          element={
+            token ? (
+              <Dashboard />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
 
-          <Signup setShowSignup={setShowSignup} />
+        <Route
+          path="/login"
+          element={<Login />}
+        />
 
-          <div className="text-center -mt-10">
+        <Route
+          path="/signup"
+          element={<Signup />}
+        />
 
-            <button
-              onClick={() =>
-                setShowSignup(false)
-              }
-              className="text-blue-500"
-            >
-              Already have an account? Login
-            </button>
+      </Routes>
 
-          </div>
-
-        </div>
-
-      ) : (
-
-        <div>
-
-          <Login
-            setShowSignup={setShowSignup}
-          />
-
-        </div>
-
-      )}
-
-    </div>
+    </BrowserRouter>
 
   );
 

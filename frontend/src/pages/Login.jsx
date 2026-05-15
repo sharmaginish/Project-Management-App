@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
@@ -8,6 +9,8 @@ export default function Login({
   const [email, setEmail] = useState("");
 
   const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
 
@@ -73,8 +76,8 @@ export default function Login({
 
         <button
           onClick={() =>
-            setShowSignup(true)
-          }
+  navigate("/signup")
+}
           className="text-blue-500 w-full"
         >
           Don't have an account? Signup
