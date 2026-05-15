@@ -8,7 +8,14 @@ const auth = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-router.post("/", protect, async (req, res) => {
+const admin = require("../middleware/adminMiddleware");
+
+router.post(
+  "/",
+  protect,
+  admin,
+
+  async (req,res) => {
 
   try {
 

@@ -27,7 +27,14 @@ router.post("/", protect, async (req, res) => {
 
 });
 
-router.get("/", protect, async (req, res) => {
+const admin = require("../middleware/adminMiddleware");
+
+router.post(
+  "/",
+  protect,
+  admin,
+
+  async (req,res) => {
 
   try {
 
@@ -51,20 +58,37 @@ router.put("/:id", protect, async (req, res) => {
 
   try {
 
-    const task = await Task.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-      }
-    );
+    const task = await Task.findById(req.params.id);
+
+    if(!task){
+
+      return res.status(404).json({
+        message:"Task not found"
+      });
+
+    }
+
+    if(
+      req.user.role !== "Admin" &&
+      task.user.toString() !== req.user.id
+    ){
+
+      return res.status(403).json({
+        message:"Access denied"
+      });
+
+    }
+
+    task.status = req.body.status || task.status;
+
+    await task.save();
 
     res.json(task);
 
-  } catch (err) {
+  } catch(err){
 
     res.status(500).json({
-      message: err.message,
+      message:err.message
     });
 
   }

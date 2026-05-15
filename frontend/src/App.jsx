@@ -8,6 +8,7 @@ import {
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Profile from "./pages/Profile";
 
 function App() {
 
@@ -38,6 +39,11 @@ function App() {
         <Route
           path="/signup"
           element={<Signup />}
+        />
+
+        <Route
+          path="/profile"
+          element={<Profile />}
         />
 
       </Routes>

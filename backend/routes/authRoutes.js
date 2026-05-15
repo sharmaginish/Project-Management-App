@@ -95,10 +95,43 @@ router.post("/login", async (req, res) => {
       }
     );
 
+    const protect = require("../middleware/authMiddleware");
+
+router.get(
+  "/profile",
+  protect,
+
+  async (req,res) => {
+
+    try {
+
+      const user = await User.findById(
+        req.user.id
+      ).select("-password");
+
+      res.json(user);
+
+    } catch(err){
+
+      res.status(500).json({
+        message:err.message
+      });
+
+    }
+
+  }
+);
+
     res.json({
-      token,
-      user,
-    });
+  token,
+  role:user.role,
+  user:{
+    id:user._id,
+    name:user.name,
+    email:user.email,
+    role:user.role,
+  }
+});
 
   } catch (err) {
 
