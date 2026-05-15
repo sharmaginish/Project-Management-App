@@ -1,6 +1,16 @@
 import { useNavigate } from "react-router-dom";
+
 import { useState } from "react";
+
 import axios from "axios";
+
+import { motion } from "framer-motion";
+
+import {
+  FaEnvelope,
+  FaLock,
+  FaUserShield
+} from "react-icons/fa";
 
 export default function Login() {
 
@@ -10,99 +20,187 @@ export default function Login() {
 
   const [password, setPassword] = useState("");
 
+  const [role, setRole] = useState("User");
+
   const handleLogin = async () => {
 
-  try {
+    try {
 
-    const res = await axios.post(
-      "https://project-management-app-jtoh.onrender.com/api/auth/login",
-      {
-        email,
-        password,
-      }
-    );
+      const res = await axios.post(
+        "https://project-management-app-jtoh.onrender.com/api/auth/login",
+        {
+          email,
+          password,
+          role
+        }
+      );
 
-    console.log(res.data);
+      localStorage.setItem(
+        "token",
+        res.data.token
+      );
 
-    localStorage.setItem(
-      "token",
-      res.data.token
-    );
+      localStorage.setItem(
+        "user",
+        JSON.stringify(res.data.user)
+      );
 
-    localStorage.setItem(
-  "user",
-  JSON.stringify(res.data.user)
-);
+      localStorage.setItem(
+        "role",
+        res.data.user.role
+      );
 
-localStorage.setItem(
-  "role",
-  res.data.user.role
-);
+      alert("Login Successful");
 
+      window.location.href = "/dashboard";
 
+    } catch (err) {
 
-    alert("Login Successful");
+      alert(
+        err.response?.data?.message ||
+        "Login Failed"
+      );
 
-    window.location.href = "/dashboard";
+    }
 
-  } catch (err) {
-
-    console.log(err);
-
-    alert(
-      err.response?.data?.message ||
-      "Login failed"
-    );
-
-  }
-
-};
+  };
 
   return (
 
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+    <div className="min-h-screen bg-[#0f172a] flex items-center justify-center p-6">
 
-      <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg w-full max-w-md">
+      <motion.div
 
-        <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center">
-          Login
-        </h1>
+        initial={{
+          opacity:0,
+          y:30
+        }}
 
-        <input
-          type="email"
-          placeholder="Enter email"
-          className="border w-full p-3 mb-4 rounded-lg text-sm sm:text-base"
-          onChange={(e) =>
-            setEmail(e.target.value)
-          }
-        />
+        animate={{
+          opacity:1,
+          y:0
+        }}
 
-        <input
-          type="password"
-          placeholder="Enter password"
-          className="border w-full p-3 mb-4 rounded-lg text-sm sm:text-base"
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
-        />
+        transition={{
+          duration:0.5
+        }}
 
-        <button
-          onClick={handleLogin}
-          className="bg-blue-500 hover:bg-blue-600 transition text-white w-full p-3 rounded-lg mb-4"
-        >
-          Login
-        </button>
+        className="bg-[#111827] w-full max-w-md rounded-[35px] p-10 border border-white/10 shadow-2xl"
 
-        <button
-          onClick={() =>
-            navigate("/signup")
-          }
-          className="text-blue-500 w-full text-sm sm:text-base"
-        >
-          Don't have an account? Signup
-        </button>
+      >
 
-      </div>
+        <div className="text-center mb-10">
+
+          <h1 className="text-5xl font-bold text-white">
+
+            Nexora
+
+          </h1>
+
+          <p className="text-gray-400 mt-3">
+
+            Smart Project Management Platform
+
+          </p>
+
+        </div>
+
+        <div className="space-y-5">
+
+          <div className="bg-[#1f2937] rounded-2xl flex items-center px-4">
+
+            <FaEnvelope className="text-gray-400" />
+
+            <input
+              type="email"
+              placeholder="Enter Email"
+              className="bg-transparent w-full p-4 outline-none text-white"
+              onChange={(e)=>
+                setEmail(e.target.value)
+              }
+            />
+
+          </div>
+
+          <div className="bg-[#1f2937] rounded-2xl flex items-center px-4">
+
+            <FaLock className="text-gray-400" />
+
+            <input
+              type="password"
+              placeholder="Enter Password"
+              className="bg-transparent w-full p-4 outline-none text-white"
+              onChange={(e)=>
+                setPassword(e.target.value)
+              }
+            />
+
+          </div>
+
+          <div className="bg-[#1f2937] rounded-2xl flex items-center px-4">
+
+            <FaUserShield className="text-gray-400" />
+
+            <select
+              value={role}
+              onChange={(e)=>
+                setRole(e.target.value)
+              }
+              className="bg-transparent w-full p-4 outline-none text-white"
+            >
+
+              <option
+                value="User"
+                className="text-black"
+              >
+                User
+              </option>
+
+              <option
+                value="Admin"
+                className="text-black"
+              >
+                Admin
+              </option>
+
+            </select>
+
+          </div>
+
+          <motion.button
+
+            whileHover={{
+              scale:1.03
+            }}
+
+            whileTap={{
+              scale:0.98
+            }}
+
+            onClick={handleLogin}
+
+            className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 p-4 rounded-2xl text-white font-bold text-lg shadow-xl"
+
+          >
+
+            Login
+
+          </motion.button>
+
+          <button
+            onClick={() =>
+              navigate("/signup")
+            }
+            className="text-indigo-400 w-full mt-3"
+          >
+
+            Don't have an account? Signup
+
+          </button>
+
+        </div>
+
+      </motion.div>
 
     </div>
 
