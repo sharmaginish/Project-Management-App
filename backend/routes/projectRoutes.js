@@ -76,17 +76,27 @@ router.get(
   protect,
 
   async (req, res) => {
+
     try {
 
       const project =
-        await Project.findById(req.params.id)
-          .populate("admin", "name email")
-          .populate("members", "name email");
+        await Project.findById(
+          req.params.id
+        )
+          .populate(
+            "members",
+            "name email"
+          )
+          .populate(
+            "admin",
+            "name email"
+          );
 
       if (!project) {
 
         return res.status(404).json({
-          message: "Project not found",
+          message:
+            "Project not found",
         });
       }
 
