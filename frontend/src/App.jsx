@@ -22,7 +22,7 @@ function App() {
 
         <div>
 
-          <Signup />
+          <Signup setShowSignup={setShowSignup} />
 
           <div className="text-center -mt-10">
 

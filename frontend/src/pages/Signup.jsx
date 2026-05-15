@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-export default function Signup() {
+export default function Signup({ setShowSignup }) {
 
   const [name, setName] = useState("");
 
@@ -25,6 +25,8 @@ export default function Signup() {
       );
 
       alert("Signup Successful");
+      setShowSignup(false);
+      window.location.href = "/login";
 
     } catch (err) {
 
