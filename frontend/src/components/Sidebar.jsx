@@ -35,11 +35,11 @@ export default function Sidebar() {
     useLocation();
 
   const user = JSON.parse(
-    localStorage.getItem("user")
+    sessionStorage.getItem("user")
   ) || {};
 
   const role =
-    localStorage.getItem("role");
+    sessionStorage.getItem("role");
 
   // AUTO CLOSE ON DESKTOP
 
@@ -75,7 +75,7 @@ export default function Sidebar() {
 
   const logout = () => {
 
-    localStorage.clear();
+    sessionStorage.clear();
 
     window.location.href =
       "/login";

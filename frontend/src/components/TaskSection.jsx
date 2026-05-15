@@ -53,10 +53,10 @@ export default function TaskSection() {
 
   // FIXED TOKEN
   const token =
-    localStorage.getItem("token");
+    sessionStorage.getItem("token");
 
   const userInfo = JSON.parse(
-    localStorage.getItem("user") || "{}"
+    sessionStorage.getItem("user") || "{}"
   );
 
   const currentUserId =

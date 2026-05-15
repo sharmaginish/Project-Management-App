@@ -27,14 +27,14 @@ export default function Members() {
   // FIXED USER + TOKEN
 
   const user = JSON.parse(
-    localStorage.getItem("user")
+    sessionStorage.getItem("user")
   ) || {};
 
   const token =
-    localStorage.getItem("token");
+    sessionStorage.getItem("token");
 
   const role =
-    localStorage.getItem("role");
+    sessionStorage.getItem("role");
 
   useEffect(() => {
 

@@ -39,19 +39,19 @@ export default function Login() {
       );
 
       // SAVE TOKEN
-      localStorage.setItem(
+      sessionStorage.setItem(
         "token",
         res.data.token
       );
 
       // SAVE USER ONLY
-      localStorage.setItem(
+      sessionStorage.setItem(
         "user",
         JSON.stringify(res.data.user)
       );
 
       // SAVE ROLE
-      localStorage.setItem(
+      sessionStorage.setItem(
         "role",
         res.data.user.role
       );

@@ -20,10 +20,10 @@ export default function Dashboard() {
 
   // FIXED USER + TOKEN
   const user = JSON.parse(
-    localStorage.getItem("user")
+    sessionStorage.getItem("user")
   );
 
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
   useEffect(() => {
 

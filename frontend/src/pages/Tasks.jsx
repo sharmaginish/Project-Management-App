@@ -45,14 +45,14 @@ export default function Tasks() {
     useState("");
 
   const user = JSON.parse(
-    localStorage.getItem("user")
+    sessionStorage.getItem("user")
   ) || {};
 
   const token =
-    localStorage.getItem("token");
+    sessionStorage.getItem("token");
 
   const role =
-    localStorage.getItem("role");
+    sessionStorage.getItem("role");
 
   useEffect(() => {
 

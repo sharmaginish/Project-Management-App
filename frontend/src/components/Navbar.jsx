@@ -2,7 +2,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
 
-    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
 
     window.location.reload();
 

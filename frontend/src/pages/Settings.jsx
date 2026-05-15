@@ -21,7 +21,7 @@ export default function Settings() {
 
   const [theme, setTheme] =
     useState(
-      localStorage.getItem("theme")
+      sessionStorage.getItem("theme")
       || "dark"
     );
 
@@ -31,7 +31,7 @@ export default function Settings() {
     setEmailNotifications] =
     useState(
       JSON.parse(
-        localStorage.getItem(
+        sessionStorage.getItem(
           "emailNotifications"
         )
       ) ?? true
@@ -41,7 +41,7 @@ export default function Settings() {
     setTaskAlerts] =
     useState(
       JSON.parse(
-        localStorage.getItem(
+        sessionStorage.getItem(
           "taskAlerts"
         )
       ) ?? true
@@ -51,7 +51,7 @@ export default function Settings() {
     setProjectAlerts] =
     useState(
       JSON.parse(
-        localStorage.getItem(
+        sessionStorage.getItem(
           "projectAlerts"
         )
       ) ?? true
@@ -60,14 +60,14 @@ export default function Settings() {
   // USER
 
   const user = JSON.parse(
-    localStorage.getItem("user")
+    sessionStorage.getItem("user")
   ) || {};
 
   // THEME EFFECT
 
   useEffect(() => {
 
-    localStorage.setItem(
+    sessionStorage.setItem(
       "theme",
       theme
     );
@@ -83,7 +83,7 @@ export default function Settings() {
 
   useEffect(() => {
 
-    localStorage.setItem(
+    sessionStorage.setItem(
       "emailNotifications",
       JSON.stringify(
         emailNotifications
@@ -94,7 +94,7 @@ export default function Settings() {
 
   useEffect(() => {
 
-    localStorage.setItem(
+    sessionStorage.setItem(
       "taskAlerts",
       JSON.stringify(
         taskAlerts
@@ -105,7 +105,7 @@ export default function Settings() {
 
   useEffect(() => {
 
-    localStorage.setItem(
+    sessionStorage.setItem(
       "projectAlerts",
       JSON.stringify(
         projectAlerts
@@ -118,7 +118,7 @@ export default function Settings() {
 
   const logout = () => {
 
-    localStorage.clear();
+    sessionStorage.clear();
 
     window.location.href =
       "/login";

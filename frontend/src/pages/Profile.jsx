@@ -14,10 +14,10 @@ import {
 export default function Profile() {
 
   const user = JSON.parse(
-    localStorage.getItem("user")
+    sessionStorage.getItem("user")
   );
 
-  const role = localStorage.getItem("role");
+  const role = sessionStorage.getItem("role");
 
   return (
 
