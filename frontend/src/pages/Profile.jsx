@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
-
-import axios from "axios";
+import Sidebar from "../components/Sidebar";
 
 import { motion } from "framer-motion";
 
@@ -11,159 +9,128 @@ import {
 
 export default function Profile() {
 
-  const [user, setUser] = useState(null);
-
-  const token = localStorage.getItem("token");
-
-  useEffect(() => {
-
-    fetchProfile();
-
-  }, []);
-
-  const fetchProfile = async () => {
-
-    try {
-
-      const res = await axios.get(
-        "https://project-management-app-jtoh.onrender.com/api/auth/profile",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
-      setUser(res.data);
-
-    } catch (err) {
-
-      console.log(err);
-
-    }
-
-  };
-
-  if (!user) {
-
-    return (
-
-      <div className="min-h-screen bg-[#0f172a] text-white flex items-center justify-center text-3xl">
-
-        Loading...
-
-      </div>
-
-    );
-
-  }
+  const user = JSON.parse(
+    localStorage.getItem("user")
+  );
 
   return (
 
-    <div className="min-h-screen bg-[#0f172a] text-white flex justify-center items-center p-6">
+    <div className="min-h-screen bg-[#0f172a] text-white">
 
-      <motion.div
+      <Sidebar />
 
-        initial={{
-          opacity:0,
-          scale:0.8
-        }}
+      <div className="ml-72 flex justify-center items-center min-h-screen p-6">
 
-        animate={{
-          opacity:1,
-          scale:1
-        }}
+        <motion.div
 
-        transition={{
-          duration:0.5
-        }}
+          initial={{
+            opacity:0,
+            scale:0.8
+          }}
 
-        className="bg-[#111827] w-full max-w-md rounded-[35px] p-10 shadow-2xl border border-white/10"
+          animate={{
+            opacity:1,
+            scale:1
+          }}
 
-      >
+          transition={{
+            duration:0.5
+          }}
 
-        <div className="flex flex-col items-center">
+          className="bg-[#111827] w-full max-w-md rounded-[35px] p-10 shadow-2xl border border-white/10"
 
-          <motion.div
+        >
 
-            whileHover={{
-              scale:1.08,
-              rotate:5
-            }}
+          <div className="flex flex-col items-center">
 
-            className="w-32 h-32 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-6xl font-bold shadow-xl"
+            <motion.div
 
-          >
+              whileHover={{
+                scale:1.08,
+                rotate:5
+              }}
 
-            {user.name[0]}
+              className="w-32 h-32 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-6xl font-bold shadow-xl"
 
-          </motion.div>
+            >
 
-          <h1 className="text-4xl font-bold mt-6">
+              {user?.name?.[0]}
 
-            {user.name}
+            </motion.div>
 
-          </h1>
+            <h1 className="text-4xl font-bold mt-6">
 
-          <p className="text-gray-400 mt-2 flex items-center gap-2">
+              {user?.name}
 
-            <FaEnvelope />
+            </h1>
 
-            {user.email}
+            <p className="text-gray-400 mt-2 flex items-center gap-2">
 
-          </p>
+              <FaEnvelope />
 
-          <div className="mt-6 bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-2 rounded-full flex items-center gap-2 shadow-lg">
+              {user?.email}
 
-            <FaUserShield />
+            </p>
 
-            {user.role}
+            <div className="mt-6 bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-2 rounded-full flex items-center gap-2 shadow-lg">
 
-          </div>
+              <FaUserShield />
 
-        </div>
+              {user?.role}
 
-        <div className="mt-10 space-y-4">
+            </div>
 
-          <div className="bg-[#1f2937] p-4 rounded-2xl flex justify-between">
+            <button className="mt-6 bg-indigo-500 hover:bg-indigo-600 transition px-6 py-3 rounded-2xl">
 
-            <span className="text-gray-400">
-              Tasks Completed
-            </span>
+              Edit Profile
 
-            <span className="font-bold">
-              24
-            </span>
+            </button>
 
           </div>
 
-          <div className="bg-[#1f2937] p-4 rounded-2xl flex justify-between">
+          <div className="mt-10 space-y-4">
 
-            <span className="text-gray-400">
-              Productivity
-            </span>
+            <div className="bg-[#1f2937] p-4 rounded-2xl flex justify-between">
 
-            <span className="font-bold">
-              87%
-            </span>
+              <span className="text-gray-400">
+                Tasks Completed
+              </span>
+
+              <span className="font-bold">
+                {Math.floor(Math.random()*30)}
+              </span>
+
+            </div>
+
+            <div className="bg-[#1f2937] p-4 rounded-2xl flex justify-between">
+
+              <span className="text-gray-400">
+                Productivity
+              </span>
+
+              <span className="font-bold">
+                {Math.floor(Math.random()*100)}%
+              </span>
+
+            </div>
+
+            <div className="bg-[#1f2937] p-4 rounded-2xl flex justify-between">
+
+              <span className="text-gray-400">
+                Active Projects
+              </span>
+
+              <span className="font-bold">
+                {Math.floor(Math.random()*10)}
+              </span>
+
+            </div>
 
           </div>
 
-          <div className="bg-[#1f2937] p-4 rounded-2xl flex justify-between">
+        </motion.div>
 
-            <span className="text-gray-400">
-              Active Projects
-            </span>
-
-            <span className="font-bold">
-              5
-            </span>
-
-          </div>
-
-        </div>
-
-      </motion.div>
+      </div>
 
     </div>
 

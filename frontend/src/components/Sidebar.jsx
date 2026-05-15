@@ -3,16 +3,20 @@ import {
   FaTasks,
   FaUserCircle,
   FaSignOutAlt,
-  FaProjectDiagram,
   FaChartPie,
-  FaCog
+  FaCog,
+  FaUsers
 } from "react-icons/fa";
 
 import { Link } from "react-router-dom";
 
 export default function Sidebar(){
 
-  const role = localStorage.getItem("role");
+  const user = JSON.parse(
+    localStorage.getItem("user")
+  );
+
+  const role = user?.role;
 
   const logout = () => {
 
@@ -28,12 +32,13 @@ export default function Sidebar(){
       <div>
 
         <h1 className="text-4xl font-bold mb-10">
-          TaskFlow
+          Nexora
         </h1>
 
         <div className="space-y-4">
 
-          <Link to="/">
+          <Link to="/dashboard">
+
             <div className="flex items-center gap-4 p-4 rounded-2xl hover:bg-[#1f2937] transition">
 
               <FaHome />
@@ -41,9 +46,11 @@ export default function Sidebar(){
               Dashboard
 
             </div>
+
           </Link>
 
-          <Link to="/">
+          <Link to="/tasks">
+
             <div className="flex items-center gap-4 p-4 rounded-2xl hover:bg-[#1f2937] transition">
 
               <FaTasks />
@@ -51,25 +58,29 @@ export default function Sidebar(){
               Tasks
 
             </div>
+
           </Link>
 
           {
             role === "Admin" && (
 
-              <Link to="/">
+              <Link to="/members">
+
                 <div className="flex items-center gap-4 p-4 rounded-2xl hover:bg-[#1f2937] transition">
 
-                  <FaProjectDiagram />
+                  <FaUsers />
 
-                  Projects
+                  Members
 
                 </div>
+
               </Link>
 
             )
           }
 
-          <Link to="/">
+          <Link to="/analytics">
+
             <div className="flex items-center gap-4 p-4 rounded-2xl hover:bg-[#1f2937] transition">
 
               <FaChartPie />
@@ -77,9 +88,11 @@ export default function Sidebar(){
               Analytics
 
             </div>
+
           </Link>
 
           <Link to="/profile">
+
             <div className="flex items-center gap-4 p-4 rounded-2xl hover:bg-[#1f2937] transition">
 
               <FaUserCircle />
@@ -87,9 +100,11 @@ export default function Sidebar(){
               Profile
 
             </div>
+
           </Link>
 
-          <Link to="/">
+          <Link to="/settings">
+
             <div className="flex items-center gap-4 p-4 rounded-2xl hover:bg-[#1f2937] transition">
 
               <FaCog />
@@ -97,6 +112,7 @@ export default function Sidebar(){
               Settings
 
             </div>
+
           </Link>
 
         </div>
@@ -112,8 +128,12 @@ export default function Sidebar(){
           </p>
 
           <h2 className="text-xl font-bold mt-1">
-            {role}
+            {user?.name}
           </h2>
+
+          <p className="text-gray-400 text-sm mt-1">
+            {role}
+          </p>
 
         </div>
 

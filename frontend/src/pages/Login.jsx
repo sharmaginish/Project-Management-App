@@ -30,18 +30,20 @@ export default function Login() {
     );
 
     localStorage.setItem(
-  "role",
-  res.data.role
-);
-
-localStorage.setItem(
   "user",
   JSON.stringify(res.data.user)
 );
 
+localStorage.setItem(
+  "role",
+  res.data.user.role
+);
+
+
+
     alert("Login Successful");
 
-    window.location.href = "/";
+    window.location.href = "/dashboard";
 
   } catch (err) {
 
