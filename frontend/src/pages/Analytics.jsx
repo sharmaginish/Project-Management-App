@@ -33,15 +33,9 @@ export default function Analytics() {
 
     fetchAnalytics();
 
-    const interval = setInterval(() => {
+    }, []);
 
-      fetchAnalytics();
-
-    }, 5000);
-
-    return () => clearInterval(interval);
-
-  }, []);
+    
 
   const fetchAnalytics = async () => {
 
@@ -213,21 +207,51 @@ export default function Analytics() {
 
         {/* HEADER */}
 
-        <div className="mb-10">
+        <div className="
+  mb-10
+  flex
+  flex-col
+  md:flex-row
+  md:items-center
+  md:justify-between
+  gap-5
+">
 
-          <h1 className="text-3xl md:text-5xl font-bold break-words">
+  <div>
 
-            Analytics
+    <h1 className="text-3xl md:text-5xl font-bold break-words">
 
-          </h1>
+      Analytics
 
-          <p className="text-gray-400 mt-3 text-base md:text-lg">
+    </h1>
 
-            Workspace performance insights
+    <p className="text-gray-400 mt-3 text-base md:text-lg">
 
-          </p>
+      Workspace performance insights
 
-        </div>
+    </p>
+
+  </div>
+
+  <button
+    onClick={fetchAnalytics}
+    className="
+      bg-indigo-500
+      hover:bg-indigo-600
+      transition
+      px-5
+      py-3
+      rounded-2xl
+      font-semibold
+      w-fit
+    "
+  >
+
+    Refresh Analytics
+
+  </button>
+
+</div>
 
         {
           loading ? (
