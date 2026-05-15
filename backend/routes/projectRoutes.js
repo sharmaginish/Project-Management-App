@@ -191,6 +191,10 @@ router.post(
 /* =========================================
    UPDATE PROJECT MEMBERS
 ========================================= */
+/* =========================================
+   UPDATE PROJECT MEMBERS
+   ONLY ADMIN
+========================================= */
 router.put(
   "/:id/members",
   protect,
@@ -215,10 +219,10 @@ router.put(
         });
       }
 
-      // ONLY ADMIN
+      // VERY IMPORTANT ADMIN CHECK
       if (
-        project.admin.toString() !==
-        req.user.id
+        String(project.admin) !==
+        String(req.user.id)
       ) {
 
         return res.status(403).json({
@@ -287,8 +291,8 @@ router.delete(
 
       // ONLY ADMIN
       if (
-        project.admin.toString() !==
-        req.user.id
+        String(project.admin) !==
+        String(req.user.id)
       ) {
 
         return res.status(403).json({

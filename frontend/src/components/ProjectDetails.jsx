@@ -259,7 +259,7 @@ export default function ProjectDetails() {
 
           {/* ONLY ADMIN CAN SEE BUTTON */}
           {project?.admin?._id ===
-            currentUserId && (
+            String(currentUserId) && (
 
             <div className="mt-10 flex justify-end">
 

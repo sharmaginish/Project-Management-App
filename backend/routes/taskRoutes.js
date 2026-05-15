@@ -146,6 +146,7 @@ router.post(
 
 /* =========================================
    UPDATE TASK MEMBERS
+   ONLY TASK ADMIN
 ========================================= */
 router.put(
   "/:id/members",
@@ -171,10 +172,10 @@ router.put(
         });
       }
 
-      // ONLY TASK ADMIN
+      // STRICT ADMIN CHECK
       if (
-        task.admin.toString() !==
-        req.user.id
+        String(task.admin) !==
+        String(req.user.id)
       ) {
 
         return res.status(403).json({
@@ -242,10 +243,10 @@ router.delete(
         });
       }
 
-      // ONLY ADMIN
+      // STRICT ADMIN CHECK
       if (
-        task.admin.toString() !==
-        req.user.id
+        String(task.admin) !==
+        String(req.user.id)
       ) {
 
         return res.status(403).json({
