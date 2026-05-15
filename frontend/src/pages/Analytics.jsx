@@ -23,16 +23,16 @@ export default function Analytics() {
 
   const [projects, setProjects] = useState([]);
 
+  const [members, setMembers] = useState([]);
+
   const [loading, setLoading] = useState(true);
 
-  // FIXED TOKEN
   const token = localStorage.getItem("token");
 
   useEffect(() => {
 
     fetchAnalytics();
 
-    // AUTO REFRESH
     const interval = setInterval(() => {
 
       fetchAnalytics();
@@ -67,9 +67,20 @@ export default function Analytics() {
         }
       );
 
+      const memberRes = await axios.get(
+        "https://project-management-app-jtoh.onrender.com/api/auth/users",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
       setTasks(taskRes.data);
 
       setProjects(projectRes.data);
+
+      setMembers(memberRes.data);
 
     } catch (err) {
 
@@ -117,6 +128,20 @@ export default function Analytics() {
         project.status === "Active"
     ).length;
 
+  // MEMBER COUNTS
+
+  const admins =
+    members.filter(
+      (member) =>
+        member.role === "Admin"
+    ).length;
+
+  const normalMembers =
+    members.filter(
+      (member) =>
+        member.role === "Member"
+    ).length;
+
   // PIE DATA
 
   const taskData = [
@@ -158,7 +183,7 @@ export default function Analytics() {
     "#22c55e"
   ];
 
-  // PRODUCTIVITY %
+  // PRODUCTIVITY
 
   const productivity = tasks.length
     ? Math.round(
@@ -219,9 +244,7 @@ export default function Analytics() {
 
               {/* STATS */}
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
-
-                {/* TOTAL TASKS */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
 
                 <div className="bg-[#111827] p-6 rounded-3xl border border-white/10">
 
@@ -239,8 +262,6 @@ export default function Analytics() {
 
                 </div>
 
-                {/* COMPLETED */}
-
                 <div className="bg-[#111827] p-6 rounded-3xl border border-white/10">
 
                   <p className="text-gray-400">
@@ -256,8 +277,6 @@ export default function Analytics() {
                   </h2>
 
                 </div>
-
-                {/* PROJECTS */}
 
                 <div className="bg-[#111827] p-6 rounded-3xl border border-white/10">
 
@@ -275,8 +294,6 @@ export default function Analytics() {
 
                 </div>
 
-                {/* PRODUCTIVITY */}
-
                 <div className="bg-[#111827] p-6 rounded-3xl border border-white/10">
 
                   <p className="text-gray-400">
@@ -293,13 +310,43 @@ export default function Analytics() {
 
                 </div>
 
+                <div className="bg-[#111827] p-6 rounded-3xl border border-white/10">
+
+                  <p className="text-gray-400">
+
+                    Admins
+
+                  </p>
+
+                  <h2 className="text-3xl md:text-5xl font-bold mt-4 text-cyan-400">
+
+                    {admins}
+
+                  </h2>
+
+                </div>
+
+                <div className="bg-[#111827] p-6 rounded-3xl border border-white/10">
+
+                  <p className="text-gray-400">
+
+                    Members
+
+                  </p>
+
+                  <h2 className="text-3xl md:text-5xl font-bold mt-4 text-orange-400">
+
+                    {normalMembers}
+
+                  </h2>
+
+                </div>
+
               </div>
 
               {/* PIE CHARTS */}
 
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-10">
-
-                {/* TASK DISTRIBUTION */}
 
                 <div className="bg-[#111827] p-5 md:p-8 rounded-3xl border border-white/10">
 
@@ -350,8 +397,6 @@ export default function Analytics() {
                   </ResponsiveContainer>
 
                 </div>
-
-                {/* PROJECT STATUS */}
 
                 <div className="bg-[#111827] p-5 md:p-8 rounded-3xl border border-white/10">
 
@@ -415,7 +460,7 @@ export default function Analytics() {
 
                 </h2>
 
-                <div className="min-w-[600px]">
+                <div className="min-w-[300px] md:min-w-[600px]">
 
                   <ResponsiveContainer
                     width="100%"
@@ -446,6 +491,72 @@ export default function Analytics() {
                     </BarChart>
 
                   </ResponsiveContainer>
+
+                </div>
+
+              </div>
+
+              {/* RECENT TASKS */}
+
+              <div className="bg-[#111827] p-5 md:p-8 rounded-3xl border border-white/10 mt-10">
+
+                <h2 className="text-2xl md:text-3xl font-bold mb-8">
+
+                  Recent Tasks
+
+                </h2>
+
+                <div className="space-y-4">
+
+                  {
+                    tasks.slice(0, 5).map(
+                      (task) => (
+
+                        <div
+                          key={task._id}
+                          className="bg-[#1f2937] p-4 rounded-2xl flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+                        >
+
+                          <div>
+
+                            <h3 className="font-bold text-lg">
+
+                              {task.title}
+
+                            </h3>
+
+                            <p className="text-gray-400 text-sm mt-1">
+
+                              {task.description}
+
+                            </p>
+
+                          </div>
+
+                          <div className={`
+                            px-4
+                            py-2
+                            rounded-full
+                            text-sm
+                            w-fit
+                            ${
+                              task.status === "Completed"
+                                ? "bg-green-500/20 text-green-400"
+                                : task.status === "In Progress"
+                                ? "bg-yellow-500/20 text-yellow-400"
+                                : "bg-indigo-500/20 text-indigo-400"
+                            }
+                          `}>
+
+                            {task.status}
+
+                          </div>
+
+                        </div>
+
+                      )
+                    )
+                  }
 
                 </div>
 
