@@ -174,13 +174,13 @@ router.put(
         });
       }
 
-      // FIX OLD PROJECTS
-      if (!project.admin) {
+      // CHECK ADMIN EXISTS
+if (!project.admin) {
 
-        project.admin = req.user.id;
-
-        await project.save();
-      }
+  return res.status(403).json({
+    message: "Project admin not found",
+  });
+}
 
       // ONLY ADMIN ACCESS
       if (
