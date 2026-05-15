@@ -21,7 +21,7 @@ export default function Projects() {
 
   const [description, setDescription] = useState("");
 
-  const [loading, setLoading] = useState(true);
+
 
   const token = sessionStorage.getItem("token");
 
