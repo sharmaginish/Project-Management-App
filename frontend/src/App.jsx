@@ -1,41 +1,17 @@
-import Profile from "./pages/Profile";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 
-function App() {
-
-  const token = localStorage.getItem("token");
+export default function App() {
 
   return (
 
     <BrowserRouter>
 
       <Routes>
-
-        <Route
-  path="/profile"
-  element={<Profile />}
-/>
-
-        <Route
-          path="/"
-          element={
-  token ? (
-    <Dashboard />
-  ) : (
-    <Navigate to="/login" />
-  )
-}
-        />
 
         <Route
           path="/login"
@@ -45,6 +21,11 @@ function App() {
         <Route
           path="/signup"
           element={<Signup />}
+        />
+
+        <Route
+          path="/"
+          element={<Dashboard />}
         />
 
         <Route
@@ -59,5 +40,3 @@ function App() {
   );
 
 }
-
-export default App;
