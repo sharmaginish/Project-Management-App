@@ -54,12 +54,17 @@ router.post("/login", async (req, res) => {
 
     const { email, password } = req.body;
 
+    console.log("EMAIL:", email);
+    console.log("PASSWORD:", password);
+
     const user = await User.findOne({ email });
+
+    console.log("USER:", user);
 
     if (!user) {
 
       return res.status(400).json({
-        message: "Invalid credentials",
+        message: "User not found",
       });
 
     }
@@ -68,6 +73,8 @@ router.post("/login", async (req, res) => {
       password,
       user.password
     );
+
+    console.log("MATCH:", isMatch);
 
     if (!isMatch) {
 
@@ -94,6 +101,8 @@ router.post("/login", async (req, res) => {
     });
 
   } catch (err) {
+
+    console.log(err);
 
     res.status(500).json({
       message: err.message,
