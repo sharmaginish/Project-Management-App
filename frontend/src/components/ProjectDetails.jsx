@@ -14,7 +14,7 @@ export default function ProjectDetails({ projectId }) {
   const fetchUsers = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/projects/users",
+        "https://project-management-app-jtoh.onrender.com/api/projects/users",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -41,7 +41,7 @@ export default function ProjectDetails({ projectId }) {
   const saveMembers = async () => {
     try {
       await axios.put(
-        `http://localhost:5000/api/projects/${projectId}/members`,
+        `https://project-management-app-jtoh.onrender.com/api/projects/${projectId}/members`,
         { members: selectedMembers },
         {
           headers: {
