@@ -55,7 +55,8 @@ export default function Projects() {
         }
       );
 
-    setProjects(res.data);
+    console.log(res.data);
+      setProjects(res.data);
 
   } catch (err) {
 
