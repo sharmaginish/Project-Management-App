@@ -128,7 +128,11 @@ export default function Sidebar(){
 
       <motion.div
 
-        initial={{ x:300 }}
+        initial={{
+          x:window.innerWidth < 768
+          ? 300
+          : -300
+        }}
 
         animate={{
           x:0
@@ -141,7 +145,6 @@ export default function Sidebar(){
         className={`
           fixed
           top-0
-          right-0
           h-screen
           w-72
           bg-[#111827]/95
@@ -151,14 +154,27 @@ export default function Sidebar(){
           flex
           flex-col
           justify-between
-          border-l
           border-white/10
           z-50
           transform
           transition-transform
           duration-300
           shadow-2xl
-          ${open ? "translate-x-0" : "translate-x-full"}
+
+          right-0
+          border-l
+
+          md:left-0
+          md:right-auto
+          md:border-r
+          md:border-l-0
+
+          ${
+            open
+            ? "translate-x-0"
+            : "translate-x-full md:-translate-x-full"
+          }
+
           md:translate-x-0
         `}
 
@@ -210,7 +226,9 @@ export default function Sidebar(){
 
                     whileHover={{
                       scale:1.03,
-                      x:-5
+                      x:window.innerWidth < 768
+                      ? -5
+                      : 5
                     }}
 
                     whileTap={{
