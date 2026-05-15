@@ -1,9 +1,9 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
-export default function Profile(){
+export default function Profile() {
 
-  const [user,setUser] = useState(null);
+  const [user, setUser] = useState(null);
 
   const token = localStorage.getItem("token");
 
@@ -11,31 +11,32 @@ export default function Profile(){
 
     fetchProfile();
 
-  },[]);
+  }, []);
 
   const fetchProfile = async () => {
 
-    try{
+    try {
 
       const res = await axios.get(
         "https://project-management-app-jtoh.onrender.com/api/auth/profile",
         {
-          headers:{
-            Authorization:`Bearer ${token}`
+          headers: {
+            Authorization: `Bearer ${token}`
           }
         }
       );
 
       setUser(res.data);
 
-    }catch(err){
+    } catch (err) {
 
       console.log(err);
 
     }
+
   };
 
-  if(!user){
+  if (!user) {
 
     return (
 
@@ -44,6 +45,7 @@ export default function Profile(){
       </div>
 
     );
+
   }
 
   return (
@@ -79,5 +81,7 @@ export default function Profile(){
       </div>
 
     </div>
+
   );
+
 }
