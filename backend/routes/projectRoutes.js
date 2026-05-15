@@ -2,11 +2,13 @@ const express = require("express");
 
 const Project = require("../models/Project");
 
+const protect = require("../middleware/authMiddleware");
+
 const auth = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-router.post("/", auth, async (req, res) => {
+router.post("/", protect, async (req, res) => {
 
   try {
 

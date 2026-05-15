@@ -2,15 +2,18 @@ const express = require("express");
 
 const Task = require("../models/Task");
 
-const auth = require("../middleware/authMiddleware");
+const protect = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-router.post("/", auth, async (req, res) => {
+router.post("/", protect, async (req, res) => {
 
   try {
 
-    const task = await Task.create(req.body);
+    const task = await Task.create({
+  ...req.body,
+  user: req.user.id,
+});
 
     res.json(task);
 
@@ -24,11 +27,11 @@ router.post("/", auth, async (req, res) => {
 
 });
 
-router.get("/", auth, async (req, res) => {
+router.get("/", protect, async (req, res) => {
 
   try {
 
-    const tasks = await Task.find()
+    const tasks = await Task.find({ user: req.user.id })
     .populate("assignedTo")
     .populate("project");
 
@@ -44,7 +47,7 @@ router.get("/", auth, async (req, res) => {
 
 });
 
-router.put("/:id", auth, async (req, res) => {
+router.put("/:id", protect, async (req, res) => {
 
   try {
 
