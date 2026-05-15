@@ -14,6 +14,8 @@ import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
 import Members from "./pages/Members";
 
+import ProjectDetails from "./components/ProjectDetails";
+
 export default function App(){
 
   return (
@@ -70,6 +72,11 @@ export default function App(){
         <Route
           path="/members"
           element={<Members />}
+        />
+
+        <Route
+          path="/project/:id"
+          element={<ProjectDetails />}
         />
 
       </Routes>

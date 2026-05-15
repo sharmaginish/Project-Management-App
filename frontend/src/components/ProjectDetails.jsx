@@ -1,7 +1,6 @@
 import { useParams } from "react-router-dom";
 
-import MemberSelector
-from "../components/MemberSelector";
+import MemberSelector from "./MemberSelector";
 
 export default function ProjectDetails() {
 

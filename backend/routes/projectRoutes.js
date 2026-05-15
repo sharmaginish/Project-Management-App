@@ -1,11 +1,12 @@
-import express from "express";
-import Project from "../models/Project.js";
-import User from "../models/User.js";
-import { protect } from "../middleware/authMiddleware.js";
+const express = require("express");
+
+const Project = require("../models/Project");
+
+const User = require("../models/User");
+
+const protect = require("../middleware/authMiddleware");
 
 const router = express.Router();
-
-
 
 // GET ALL USERS
 router.get(
@@ -280,6 +281,4 @@ router.delete(
   }
 );
 
-
-
-export default router;
+module.exports = router;

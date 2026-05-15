@@ -6,6 +6,8 @@ import axios from "axios";
 
 import { motion } from "framer-motion";
 
+import { useNavigate } from "react-router-dom";
+
 import {
   FaTrash,
   FaFolderOpen
@@ -28,6 +30,8 @@ export default function Projects() {
   const user = JSON.parse(
     sessionStorage.getItem("user")
   );
+
+  const navigate = useNavigate();
 
   useEffect(() => {
 
@@ -184,7 +188,7 @@ export default function Projects() {
 
           <div>
 
-            <h1 className="text-3xl md:text-5xlxl font-bold">
+            <h1 className="text-3xl md:text-5xl font-bold">
 
               Projects
 
@@ -415,11 +419,33 @@ export default function Projects() {
 
                     </div>
 
-                    <div className="text-gray-500 text-sm">
+                    <div className="flex items-center gap-3">
 
-                      Created by
-                      {" "}
-                      {user?.name}
+                      <button
+
+                        onClick={() =>
+                          navigate(`/project/${project._id}`)
+                        }
+
+                        className="
+                          bg-blue-600
+                          hover:bg-blue-700
+                          px-4
+                          py-2
+                          rounded-xl
+                          font-semibold
+                        "
+                      >
+
+                        Open Project
+
+                      </button>
+
+                      <div className="text-gray-500 text-sm">
+
+                        Created by {user?.name}
+
+                      </div>
 
                     </div>
 
