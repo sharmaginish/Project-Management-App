@@ -4,6 +4,7 @@ import axios from "axios";
 export default function ProjectDetails({ projectId }) {
   const [users, setUsers] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const token = localStorage.getItem("token");
 
@@ -25,6 +26,8 @@ export default function ProjectDetails({ projectId }) {
       setUsers(res.data);
     } catch (err) {
       console.log(err);
+
+      alert("Failed to load users");
     }
   };
 
@@ -34,15 +37,29 @@ export default function ProjectDetails({ projectId }) {
         selectedMembers.filter((id) => id !== userId)
       );
     } else {
-      setSelectedMembers([...selectedMembers, userId]);
+      setSelectedMembers([
+        ...selectedMembers,
+        userId,
+      ]);
     }
   };
 
   const saveMembers = async () => {
     try {
-      await axios.put(
+      setLoading(true);
+
+      console.log("PROJECT ID:", projectId);
+
+      console.log(
+        "SELECTED MEMBERS:",
+        selectedMembers
+      );
+
+      const res = await axios.put(
         `https://project-management-app-jtoh.onrender.com/api/projects/${projectId}/members`,
-        { members: selectedMembers },
+        {
+          members: selectedMembers,
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -50,16 +67,25 @@ export default function ProjectDetails({ projectId }) {
         }
       );
 
-      alert("Members Added Successfully");
+      console.log(res.data);
+
+      alert("Members Saved Successfully");
     } catch (err) {
       console.log(err);
+
+      alert(
+        err.response?.data?.message ||
+          "Error saving members"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-[#0f172a] p-6 text-white">
       <div className="max-w-5xl mx-auto">
-        
+
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold">
@@ -67,44 +93,51 @@ export default function ProjectDetails({ projectId }) {
           </h1>
 
           <p className="text-gray-400 mt-2">
-            Manage your team members professionally
+            Manage your team professionally
           </p>
         </div>
 
-        {/* Card */}
-        <div className="bg-[#1e293b] rounded-3xl shadow-2xl p-8 border border-gray-700">
+        {/* Main Card */}
+        <div className="bg-[#1e293b] rounded-3xl shadow-2xl border border-gray-700 p-8">
 
-          <div className="flex items-center justify-between mb-6">
+          {/* Top */}
+          <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-semibold">
               Team Members
             </h2>
 
-            <span className="bg-blue-600 px-4 py-2 rounded-xl text-sm">
+            <div className="bg-blue-600 px-4 py-2 rounded-xl text-sm font-medium">
               {selectedMembers.length} Selected
-            </span>
+            </div>
           </div>
 
-          {/* Members Grid */}
+          {/* Users */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
             {users.map((user) => (
               <div
                 key={user._id}
-                onClick={() => handleSelect(user._id)}
-                className={`cursor-pointer transition-all duration-300 rounded-2xl p-5 border ${
-                  selectedMembers.includes(user._id)
-                    ? "bg-blue-600 border-blue-400"
-                    : "bg-[#0f172a] border-gray-700 hover:border-blue-500"
+                onClick={() =>
+                  handleSelect(user._id)
+                }
+                className={`cursor-pointer rounded-2xl p-5 border transition-all duration-300 ${
+                  selectedMembers.includes(
+                    user._id
+                  )
+                    ? "bg-blue-600 border-blue-400 scale-[1.02]"
+                    : "bg-[#0f172a] border-gray-700 hover:border-blue-500 hover:scale-[1.01]"
                 }`}
               >
                 <div className="flex items-center gap-4">
 
                   {/* Avatar */}
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 flex items-center justify-center text-xl font-bold">
-                    {user.name?.charAt(0).toUpperCase()}
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-r from-cyan-400 to-blue-600 flex items-center justify-center text-xl font-bold">
+                    {user.name
+                      ?.charAt(0)
+                      .toUpperCase()}
                   </div>
 
-                  {/* Info */}
+                  {/* User Info */}
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold">
                       {user.name}
@@ -118,8 +151,10 @@ export default function ProjectDetails({ projectId }) {
                   {/* Checkbox */}
                   <input
                     type="checkbox"
-                    checked={selectedMembers.includes(user._id)}
-                    onChange={() => {}}
+                    checked={selectedMembers.includes(
+                      user._id
+                    )}
+                    readOnly
                     className="w-5 h-5 accent-blue-500"
                   />
                 </div>
@@ -128,10 +163,10 @@ export default function ProjectDetails({ projectId }) {
 
           </div>
 
-          {/* Empty State */}
+          {/* Empty */}
           {users.length === 0 && (
             <div className="text-center py-20 text-gray-400">
-              No members found
+              No users found
             </div>
           )}
 
@@ -139,9 +174,16 @@ export default function ProjectDetails({ projectId }) {
           <div className="mt-10 flex justify-end">
             <button
               onClick={saveMembers}
-              className="bg-blue-600 hover:bg-blue-700 transition-all px-8 py-3 rounded-2xl font-semibold shadow-lg"
+              disabled={loading}
+              className={`px-8 py-3 rounded-2xl font-semibold shadow-2xl transition-all duration-300 ${
+                loading
+                  ? "bg-gray-600 cursor-not-allowed"
+                  : "bg-gradient-to-r from-blue-600 to-cyan-500 hover:scale-105"
+              }`}
             >
-              Save Members
+              {loading
+                ? "Saving..."
+                : "Save Members"}
             </button>
           </div>
         </div>
