@@ -15,7 +15,7 @@ export default function TaskSection() {
     try {
 
       const res = await axios.get(
-        "https://project-management-app-jtoh.onrender.com/",
+        "https://project-management-app-jtoh.onrender.com/api/tasks",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -44,7 +44,7 @@ export default function TaskSection() {
     try {
 
       await axios.post(
-        "https://project-management-app-jtoh.onrender.com/",
+        "https://project-management-app-jtoh.onrender.com/api/tasks",
 
         {
           title,

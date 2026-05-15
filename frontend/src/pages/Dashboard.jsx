@@ -16,7 +16,7 @@ export default function Dashboard() {
     try {
 
       const res = await axios.get(
-        "http://localhost:5000/api/tasks",
+        "https://project-management-app-jtoh.onrender.com/api/tasks",
         {
           headers: {
             Authorization: `Bearer ${token}`,
