@@ -25,10 +25,10 @@ export default function Projects() {
 
   const token = localStorage.getItem("token");
 
-  const role = sessionStorage.getItem("role");
+  const role = localStorage.getItem("role");
 
   const user = JSON.parse(
-    sessionStorage.getItem("user")
+    localStorage.getItem("user")
   );
 
   const navigate = useNavigate();
