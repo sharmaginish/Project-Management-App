@@ -15,26 +15,40 @@ export default function Profile(){
 
   const fetchProfile = async () => {
 
-    const res = await axios.get(
-      "https://project-management-app-jtoh.onrender.com/api/auth/profile",
-      {
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
-      }
-    );
+    try{
 
-    setUser(res.data);
+      const res = await axios.get(
+        "https://project-management-app-jtoh.onrender.com/api/auth/profile",
+        {
+          headers:{
+            Authorization:`Bearer ${token}`
+          }
+        }
+      );
+
+      setUser(res.data);
+
+    }catch(err){
+
+      console.log(err);
+
+    }
   };
 
   if(!user){
 
-    return <h1>Loading...</h1>;
+    return (
+
+      <div className="text-white p-10">
+        Loading...
+      </div>
+
+    );
   }
 
   return (
 
-    <div className="min-h-screen flex justify-center items-center">
+    <div className="min-h-screen flex justify-center items-center text-white">
 
       <div className="glass p-10 rounded-3xl w-[400px]">
 
