@@ -8,7 +8,9 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
+
 import Projects from "./components/ProjectSection";
+
 import Tasks from "./pages/Tasks";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
@@ -16,7 +18,10 @@ import Members from "./pages/Members";
 
 import ProjectDetails from "./components/ProjectDetails";
 
-export default function App(){
+// IMPORT TASK SECTION
+import TaskSection from "./pages/TaskSection";
+
+export default function App() {
 
   return (
 
@@ -74,15 +79,17 @@ export default function App(){
           element={<Members />}
         />
 
+        {/* PROJECT DETAILS */}
         <Route
           path="/project/:id"
           element={<ProjectDetails />}
         />
 
+        {/* PROJECT TASKS */}
         <Route
-  path="/project/:id/tasks"
-  element={<TaskSection />}
-/>
+          path="/project/:id/tasks"
+          element={<TaskSection />}
+        />
 
       </Routes>
 
