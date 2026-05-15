@@ -1,32 +1,58 @@
-const express = require("express");
+import express from "express";
+import Project from "../models/Project.js";
+import User from "../models/User.js";
+import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-const Project = require("../models/Project");
-
-const protect = require("../middleware/authMiddleware");
 
 
+// GET ALL USERS
+router.get(
+  "/users",
+  protect,
 
+  async (req, res) => {
+
+    try {
+
+      const users =
+        await User.find().select("-password");
+
+      res.json(users);
+
+    } catch (err) {
+
+      res.status(500).json({
+        message: err.message,
+      });
+
+    }
+
+  }
+);
+
+
+
+// GET ALL PROJECTS
 router.get(
   "/",
   protect,
 
-  async(req,res)=>{
+  async (req, res) => {
 
-    try{
+    try {
 
       const projects =
-        await Project.find().sort({
-          createdAt:-1
-        });
+        await Project.find()
+          .sort({ createdAt: -1 });
 
       res.json(projects);
 
-    }catch(err){
+    } catch (err) {
 
       res.status(500).json({
-        message:err.message
+        message: err.message,
       });
 
     }
@@ -36,33 +62,75 @@ router.get(
 
 
 
+// GET SINGLE PROJECT
+router.get(
+  "/:id",
+  protect,
+
+  async (req, res) => {
+
+    try {
+
+      const project =
+        await Project.findById(req.params.id)
+          .populate("members", "name email")
+          .populate("admin", "name");
+
+      if (!project) {
+
+        return res.status(404).json({
+          message: "Project not found",
+        });
+
+      }
+
+      res.json(project);
+
+    } catch (err) {
+
+      res.status(500).json({
+        message: err.message,
+      });
+
+    }
+
+  }
+);
+
+
+
+// CREATE PROJECT
 router.post(
   "/",
   protect,
 
-  async(req,res)=>{
+  async (req, res) => {
 
-    try{
+    try {
 
       const project =
         await Project.create({
 
-          title:req.body.title,
+          title: req.body.title,
 
-          description:req.body.description,
+          description:
+            req.body.description,
 
-          progress:0,
+          progress: 0,
 
-          status:"Active"
+          status: "Active",
 
+          admin: req.user.id,
+
+          members: [],
         });
 
       res.json(project);
 
-    }catch(err){
+    } catch (err) {
 
       res.status(500).json({
-        message:err.message
+        message: err.message,
       });
 
     }
@@ -72,23 +140,87 @@ router.post(
 
 
 
+// UPDATE PROJECT MEMBERS
 router.put(
-  "/:id",
+  "/:id/members",
   protect,
 
-  async(req,res)=>{
+  async (req, res) => {
 
-    try{
+    try {
+
+      const { members } = req.body;
 
       const project =
         await Project.findById(
           req.params.id
         );
 
-      if(!project){
+      if (!project) {
 
         return res.status(404).json({
-          message:"Project not found"
+          message: "Project not found",
+        });
+
+      }
+
+      // ONLY ADMIN CAN UPDATE
+      if (
+        project.admin.toString() !==
+        req.user.id
+      ) {
+
+        return res.status(403).json({
+          message:
+            "Only admin can edit members",
+        });
+
+      }
+
+      project.members = members;
+
+      await project.save();
+
+      const updatedProject =
+        await Project.findById(project._id)
+          .populate(
+            "members",
+            "name email"
+          );
+
+      res.json(updatedProject);
+
+    } catch (err) {
+
+      res.status(500).json({
+        message: err.message,
+      });
+
+    }
+
+  }
+);
+
+
+
+// UPDATE PROJECT PROGRESS
+router.put(
+  "/:id",
+  protect,
+
+  async (req, res) => {
+
+    try {
+
+      const project =
+        await Project.findById(
+          req.params.id
+        );
+
+      if (!project) {
+
+        return res.status(404).json({
+          message: "Project not found",
         });
 
       }
@@ -96,7 +228,7 @@ router.put(
       project.progress =
         req.body.progress;
 
-      if(project.progress >= 100){
+      if (project.progress >= 100) {
 
         project.status =
           "Completed";
@@ -107,10 +239,10 @@ router.put(
 
       res.json(project);
 
-    }catch(err){
+    } catch (err) {
 
       res.status(500).json({
-        message:err.message
+        message: err.message,
       });
 
     }
@@ -120,26 +252,27 @@ router.put(
 
 
 
+// DELETE PROJECT
 router.delete(
   "/:id",
   protect,
 
-  async(req,res)=>{
+  async (req, res) => {
 
-    try{
+    try {
 
       await Project.findByIdAndDelete(
         req.params.id
       );
 
       res.json({
-        message:"Project deleted"
+        message: "Project deleted",
       });
 
-    }catch(err){
+    } catch (err) {
 
       res.status(500).json({
-        message:err.message
+        message: err.message,
       });
 
     }
@@ -147,4 +280,6 @@ router.delete(
   }
 );
 
-module.exports = router;
+
+
+export default router;
