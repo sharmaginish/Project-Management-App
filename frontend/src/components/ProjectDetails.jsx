@@ -27,9 +27,12 @@ export default function ProjectDetails() {
 
       setUsers(res.data);
     } catch (err) {
-      console.log(err);
+      console.log(err.response);
 
-      alert("Failed to load users");
+      alert(
+        err.response?.data?.message ||
+          "Error saving members"
+      );
     }
   };
 
@@ -73,7 +76,7 @@ export default function ProjectDetails() {
 
       alert("Members Saved Successfully");
     } catch (err) {
-      console.log(err);
+      console.log(err.response);
 
       alert(
         err.response?.data?.message ||
