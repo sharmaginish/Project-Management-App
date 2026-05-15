@@ -23,7 +23,7 @@ export default function Projects() {
 
 
 
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
   const role = sessionStorage.getItem("role");
 
