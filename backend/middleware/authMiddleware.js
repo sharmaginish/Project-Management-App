@@ -12,6 +12,8 @@ const protect = async (
 
     let token;
 
+    // CHECK TOKEN
+
     if (
       req.headers.authorization &&
       req.headers.authorization.startsWith(
@@ -25,24 +27,29 @@ const protect = async (
         )[1];
 
       // VERIFY TOKEN
+
       const decoded =
         jwt.verify(
           token,
           process.env.JWT_SECRET
         );
 
-      // SAVE FULL USER
-      req.user._id =
+      // SAVE USER IN REQUEST
+
+      req.user =
         await User.findById(
           decoded.id
         ).select("-password");
 
-      if (!req.user._id) {
+      // USER NOT FOUND
+
+      if (!req.user) {
 
         return res.status(401).json({
           message:
             "User not found",
         });
+
       }
 
       next();
@@ -53,6 +60,7 @@ const protect = async (
         message:
           "No token provided",
       });
+
     }
 
   } catch (err) {
@@ -63,7 +71,9 @@ const protect = async (
       message:
         "Not authorized",
     });
+
   }
+
 };
 
 module.exports = protect;

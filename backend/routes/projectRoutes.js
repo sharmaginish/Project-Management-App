@@ -15,9 +15,11 @@ const protect = require(
 );
 
 
+
 /* =========================================
    GET USERS
 ========================================= */
+
 router.get(
   "/users",
   protect,
@@ -41,14 +43,18 @@ router.get(
         message:
           err.message,
       });
+
     }
+
   }
 );
+
 
 
 /* =========================================
    GET ALL PROJECTS
 ========================================= */
+
 router.get(
   "/",
   protect,
@@ -81,24 +87,30 @@ router.get(
         message:
           err.message,
       });
+
     }
+
   }
 );
+
 
 
 /* =========================================
    GET SINGLE PROJECT
 ========================================= */
+
 router.get(
-  "/",
+  "/:id",
   protect,
 
   async (req, res) => {
 
     try {
 
-      const projects =
-        await Project.find()
+      const project =
+        await Project.findById(
+          req.params.id
+        )
           .populate(
             "admin",
             "name email"
@@ -106,12 +118,18 @@ router.get(
           .populate(
             "members",
             "name email"
-          )
-          .sort({
-            createdAt: -1,
-          });
+          );
 
-      res.json(projects);
+      if (!project) {
+
+        return res.status(404).json({
+          message:
+            "Project not found",
+        });
+
+      }
+
+      res.json(project);
 
     } catch (err) {
 
@@ -121,12 +139,18 @@ router.get(
         message:
           err.message,
       });
+
     }
+
   }
 );
+
+
+
 /* =========================================
    CREATE PROJECT
 ========================================= */
+
 router.post(
   "/",
   protect,
@@ -137,6 +161,7 @@ router.post(
 
       const project =
         await Project.create({
+
           title:
             req.body.title,
 
@@ -144,9 +169,14 @@ router.post(
             req.body.description,
 
           admin:
-            req.user.id,
+            req.user._id,
 
           members: [],
+
+          progress: 0,
+
+          status: "Active"
+
         });
 
       const populatedProject =
@@ -174,18 +204,109 @@ router.post(
         message:
           err.message,
       });
+
     }
+
   }
 );
 
 
+
+/* =========================================
+   UPDATE PROJECT
+========================================= */
+
+router.put(
+  "/:id",
+  protect,
+
+  async (req, res) => {
+
+    try {
+
+      const project =
+        await Project.findById(
+          req.params.id
+        );
+
+      if (!project) {
+
+        return res.status(404).json({
+          message:
+            "Project not found",
+        });
+
+      }
+
+      // ONLY ADMIN
+
+      if (
+        String(project.admin) !==
+        String(req.user._id)
+      ) {
+
+        return res.status(403).json({
+          message:
+            "Only admin can update project",
+        });
+
+      }
+
+      project.title =
+        req.body.title ||
+        project.title;
+
+      project.description =
+        req.body.description ||
+        project.description;
+
+      project.progress =
+        req.body.progress ??
+        project.progress;
+
+      project.status =
+        req.body.status ||
+        project.status;
+
+      await project.save();
+
+      const updatedProject =
+        await Project.findById(
+          project._id
+        )
+          .populate(
+            "admin",
+            "name email"
+          )
+          .populate(
+            "members",
+            "name email"
+          );
+
+      res.json(
+        updatedProject
+      );
+
+    } catch (err) {
+
+      console.log(err);
+
+      res.status(500).json({
+        message:
+          err.message,
+      });
+
+    }
+
+  }
+);
+
+
+
 /* =========================================
    UPDATE PROJECT MEMBERS
 ========================================= */
-/* =========================================
-   UPDATE PROJECT MEMBERS
-   ONLY ADMIN
-========================================= */
+
 router.put(
   "/:id/members",
   protect,
@@ -208,9 +329,11 @@ router.put(
           message:
             "Project not found",
         });
+
       }
 
-      // VERY IMPORTANT ADMIN CHECK
+      // ONLY ADMIN
+
       if (
         String(project.admin) !==
         String(req.user._id)
@@ -220,6 +343,7 @@ router.put(
           message:
             "Only admin can edit members",
         });
+
       }
 
       project.members =
@@ -252,13 +376,18 @@ router.put(
         message:
           err.message,
       });
+
     }
+
   }
 );
+
+
 
 /* =========================================
    DELETE PROJECT
 ========================================= */
+
 router.delete(
   "/:id",
   protect,
@@ -278,18 +407,21 @@ router.delete(
           message:
             "Project not found",
         });
+
       }
 
       // ONLY ADMIN
+
       if (
         String(project.admin) !==
-        String(req.user.id)
+        String(req.user._id)
       ) {
 
         return res.status(403).json({
           message:
             "Only admin can delete project",
         });
+
       }
 
       await Project.findByIdAndDelete(
@@ -309,7 +441,9 @@ router.delete(
         message:
           err.message,
       });
+
     }
+
   }
 );
 

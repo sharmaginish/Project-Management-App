@@ -15,9 +15,59 @@ const protect = require(
 const router = express.Router();
 
 
+
+/* =========================================
+   GET ALL TASKS
+========================================= */
+
+router.get(
+  "/",
+  protect,
+
+  async (req, res) => {
+
+    try {
+
+      const tasks =
+        await Task.find()
+          .populate(
+            "admin",
+            "name email"
+          )
+          .populate(
+            "members",
+            "name email"
+          )
+          .populate(
+            "project",
+            "title"
+          )
+          .sort({
+            createdAt: -1,
+          });
+
+      res.json(tasks);
+
+    } catch (err) {
+
+      console.log(err);
+
+      res.status(500).json({
+        message:
+          err.message,
+      });
+
+    }
+
+  }
+);
+
+
+
 /* =========================================
    GET TASKS OF PROJECT
 ========================================= */
+
 router.get(
   "/project/:projectId",
   protect,
@@ -53,14 +103,18 @@ router.get(
         message:
           err.message,
       });
+
     }
+
   }
 );
+
 
 
 /* =========================================
    CREATE TASK
 ========================================= */
+
 router.post(
   "/",
   protect,
@@ -76,42 +130,60 @@ router.post(
         projectId,
       } = req.body;
 
-      const project =
-        await Project.findById(
-          projectId
-        );
+      // IF PROJECT TASK
 
-      if (!project) {
+      if (projectId) {
 
-        return res.status(404).json({
-          message:
-            "Project not found",
-        });
-      }
+        const project =
+          await Project.findById(
+            projectId
+          );
 
-      // ONLY PROJECT ADMIN
-      if (
-        project.admin.toString() !==
-        req.user.id
-      ) {
+        if (!project) {
 
-        return res.status(403).json({
-          message:
-            "Only admin can create tasks",
-        });
+          return res.status(404).json({
+            message:
+              "Project not found",
+          });
+
+        }
+
+        // ONLY PROJECT ADMIN
+
+        if (
+          String(project.admin) !==
+          String(req.user._id)
+        ) {
+
+          return res.status(403).json({
+            message:
+              "Only admin can create tasks",
+          });
+
+        }
+
       }
 
       const task =
         await Task.create({
+
           title,
+
           description,
-          priority,
 
-          project: projectId,
+          priority:
+            priority || "Medium",
 
-          admin: req.user.id,
+          status: "Pending",
+
+          project:
+            projectId || null,
+
+          admin:
+            req.user._id,
 
           members: [],
+
         });
 
       const populatedTask =
@@ -139,15 +211,109 @@ router.post(
         message:
           err.message,
       });
+
     }
+
   }
 );
 
 
+
+/* =========================================
+   UPDATE TASK
+========================================= */
+
+router.put(
+  "/:id",
+  protect,
+
+  async (req, res) => {
+
+    try {
+
+      const task =
+        await Task.findById(
+          req.params.id
+        );
+
+      if (!task) {
+
+        return res.status(404).json({
+          message:
+            "Task not found",
+        });
+
+      }
+
+      // ONLY ADMIN
+
+      if (
+        String(task.admin) !==
+        String(req.user._id)
+      ) {
+
+        return res.status(403).json({
+          message:
+            "Only task admin can update task",
+        });
+
+      }
+
+      task.title =
+        req.body.title ||
+        task.title;
+
+      task.description =
+        req.body.description ||
+        task.description;
+
+      task.priority =
+        req.body.priority ||
+        task.priority;
+
+      task.status =
+        req.body.status ||
+        task.status;
+
+      await task.save();
+
+      const updatedTask =
+        await Task.findById(
+          task._id
+        )
+          .populate(
+            "admin",
+            "name email"
+          )
+          .populate(
+            "members",
+            "name email"
+          );
+
+      res.json(
+        updatedTask
+      );
+
+    } catch (err) {
+
+      console.log(err);
+
+      res.status(500).json({
+        message:
+          err.message,
+      });
+
+    }
+
+  }
+);
+
+
+
 /* =========================================
    UPDATE TASK MEMBERS
-   ONLY TASK ADMIN
 ========================================= */
+
 router.put(
   "/:id/members",
   protect,
@@ -170,9 +336,11 @@ router.put(
           message:
             "Task not found",
         });
+
       }
 
-      // STRICT ADMIN CHECK
+      // ONLY TASK ADMIN
+
       if (
         String(task.admin) !==
         String(req.user._id)
@@ -182,6 +350,7 @@ router.put(
           message:
             "Only task admin can edit members",
         });
+
       }
 
       task.members =
@@ -214,14 +383,18 @@ router.put(
         message:
           err.message,
       });
+
     }
+
   }
 );
+
 
 
 /* =========================================
    DELETE TASK
 ========================================= */
+
 router.delete(
   "/:id",
   protect,
@@ -241,18 +414,21 @@ router.delete(
           message:
             "Task not found",
         });
+
       }
 
-      // STRICT ADMIN CHECK
+      // ONLY TASK ADMIN
+
       if (
         String(task.admin) !==
-        String(req.user.id)
+        String(req.user._id)
       ) {
 
         return res.status(403).json({
           message:
             "Only task admin can delete task",
         });
+
       }
 
       await Task.findByIdAndDelete(
@@ -272,7 +448,9 @@ router.delete(
         message:
           err.message,
       });
+
     }
+
   }
 );
 
