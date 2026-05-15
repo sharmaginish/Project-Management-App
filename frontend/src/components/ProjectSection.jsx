@@ -4,6 +4,13 @@ import { useEffect, useState } from "react";
 
 import axios from "axios";
 
+import { motion } from "framer-motion";
+
+import {
+  FaTrash,
+  FaFolderOpen
+} from "react-icons/fa";
+
 export default function Projects() {
 
   const [projects, setProjects] = useState([]);
@@ -18,6 +25,10 @@ export default function Projects() {
 
   const role = localStorage.getItem("role");
 
+  const user = JSON.parse(
+    localStorage.getItem("user")
+  );
+
   useEffect(() => {
 
     fetchProjects();
@@ -31,7 +42,7 @@ export default function Projects() {
       const res = await axios.get(
         "https://project-management-app-jtoh.onrender.com/api/projects",
         {
-          headers: {
+          headers:{
             Authorization:`Bearer ${token}`
           }
         }
@@ -41,7 +52,7 @@ export default function Projects() {
 
       setLoading(false);
 
-    } catch (err) {
+    } catch(err){
 
       console.log(err);
 
@@ -53,13 +64,23 @@ export default function Projects() {
 
   const createProject = async () => {
 
+    if(role !== "Admin"){
+
+      return alert(
+        "Only admin can create projects"
+      );
+
+    }
+
     try {
 
       await axios.post(
         "https://project-management-app-jtoh.onrender.com/api/projects",
         {
           title,
-          description
+          description,
+          progress:0,
+          status:"Active"
         },
         {
           headers:{
@@ -74,7 +95,76 @@ export default function Projects() {
 
       fetchProjects();
 
-    } catch (err) {
+    } catch(err){
+
+      console.log(err);
+
+    }
+
+  };
+
+  const deleteProject = async (id) => {
+
+    if(role !== "Admin"){
+
+      return alert(
+        "Only admin can delete projects"
+      );
+
+    }
+
+    try {
+
+      await axios.delete(
+        `https://project-management-app-jtoh.onrender.com/api/projects/${id}`,
+        {
+          headers:{
+            Authorization:`Bearer ${token}`
+          }
+        }
+      );
+
+      fetchProjects();
+
+    } catch(err){
+
+      console.log(err);
+
+    }
+
+  };
+
+  const updateProgress = async (
+    id,
+    currentProgress
+  ) => {
+
+    try {
+
+      let newProgress =
+        currentProgress + 10;
+
+      if(newProgress > 100){
+
+        newProgress = 100;
+
+      }
+
+      await axios.put(
+        `https://project-management-app-jtoh.onrender.com/api/projects/${id}`,
+        {
+          progress:newProgress
+        },
+        {
+          headers:{
+            Authorization:`Bearer ${token}`
+          }
+        }
+      );
+
+      fetchProjects();
+
+    } catch(err){
 
       console.log(err);
 
@@ -90,18 +180,62 @@ export default function Projects() {
 
       <div className="ml-72 p-10">
 
-        <h1 className="text-5xl font-bold mb-10">
+        <div className="flex justify-between items-center mb-10">
 
-          Projects
+          <div>
 
-        </h1>
+            <h1 className="text-5xl font-bold">
+
+              Projects
+
+            </h1>
+
+            <p className="text-gray-400 mt-3 text-lg">
+
+              Workspace Project Management
+
+            </p>
+
+          </div>
+
+          <div className="bg-[#111827] px-6 py-4 rounded-2xl border border-white/10">
+
+            <p className="text-gray-400">
+
+              Total Projects
+
+            </p>
+
+            <h2 className="text-4xl font-bold mt-2">
+
+              {projects.length}
+
+            </h2>
+
+          </div>
+
+        </div>
 
         {
           role === "Admin" && (
 
-            <div className="bg-[#111827] p-6 rounded-3xl mb-10 border border-white/10">
+            <motion.div
 
-              <h2 className="text-2xl font-bold mb-5">
+              initial={{
+                opacity:0,
+                y:20
+              }}
+
+              animate={{
+                opacity:1,
+                y:0
+              }}
+
+              className="bg-[#111827] p-6 rounded-3xl mb-10 border border-white/10"
+
+            >
+
+              <h2 className="text-3xl font-bold mb-6">
 
                 Create Project
 
@@ -128,14 +262,14 @@ export default function Projects() {
 
               <button
                 onClick={createProject}
-                className="bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-3 rounded-2xl"
+                className="bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-3 rounded-2xl font-bold"
               >
 
                 Create Project
 
               </button>
 
-            </div>
+            </motion.div>
 
           )
         }
@@ -161,26 +295,137 @@ export default function Projects() {
 
             ) : (
 
-              projects.map((project)=>(
+              projects.map((project,index)=>(
 
-                <div
+                <motion.div
+
+                  initial={{
+                    opacity:0,
+                    y:30
+                  }}
+
+                  animate={{
+                    opacity:1,
+                    y:0
+                  }}
+
+                  transition={{
+                    delay:index * 0.1
+                  }}
+
                   key={project._id}
-                  className="bg-[#111827] p-6 rounded-3xl border border-white/10 hover:border-indigo-500 transition"
+
+                  className="bg-[#111827] p-6 rounded-3xl border border-white/10"
+
                 >
 
-                  <h2 className="text-2xl font-bold">
+                  <div className="flex justify-between items-start">
 
-                    {project.title}
+                    <div>
 
-                  </h2>
+                      <div className="flex items-center gap-3">
 
-                  <p className="text-gray-400 mt-3">
+                        <FaFolderOpen className="text-indigo-400 text-2xl" />
 
-                    {project.description}
+                        <h2 className="text-2xl font-bold">
 
-                  </p>
+                          {project.title}
 
-                </div>
+                        </h2>
+
+                      </div>
+
+                      <p className="text-gray-400 mt-4">
+
+                        {project.description}
+
+                      </p>
+
+                    </div>
+
+                    {
+                      role === "Admin" && (
+
+                        <button
+                          onClick={() =>
+                            deleteProject(project._id)
+                          }
+                          className="bg-red-500 hover:bg-red-600 transition p-3 rounded-xl"
+                        >
+
+                          <FaTrash />
+
+                        </button>
+
+                      )
+                    }
+
+                  </div>
+
+                  <div className="mt-6">
+
+                    <div className="flex justify-between mb-2">
+
+                      <span>
+
+                        Progress
+
+                      </span>
+
+                      <span>
+
+                        {project.progress || 0}%
+
+                      </span>
+
+                    </div>
+
+                    <div className="w-full bg-[#1f2937] rounded-full h-4">
+
+                      <div
+                        className="bg-gradient-to-r from-indigo-500 to-purple-600 h-4 rounded-full"
+                        style={{
+                          width:`${project.progress || 0}%`
+                        }}
+                      ></div>
+
+                    </div>
+
+                    <button
+                      onClick={() =>
+                        updateProgress(
+                          project._id,
+                          project.progress || 0
+                        )
+                      }
+                      className="mt-5 bg-indigo-500 hover:bg-indigo-600 transition px-5 py-2 rounded-2xl"
+                    >
+
+                      Update Progress
+
+                    </button>
+
+                  </div>
+
+                  <div className="mt-6 flex justify-between items-center">
+
+                    <div className="bg-indigo-500/20 text-indigo-400 px-4 py-2 rounded-full">
+
+                      {project.status || "Active"}
+
+                    </div>
+
+                    <div className="text-gray-500 text-sm">
+
+                      Created by
+                      {" "}
+                      {user?.name}
+
+                    </div>
+
+                  </div>
+
+                </motion.div>
 
               ))
 
