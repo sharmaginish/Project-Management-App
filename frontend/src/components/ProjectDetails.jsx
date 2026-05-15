@@ -26,14 +26,19 @@ export default function ProjectDetails() {
       );
 
       setUsers(res.data);
-    } catch (err) {
-      console.log(err.response);
+    } 
+    catch (err) {
+  console.log("FULL ERROR:", err);
 
-      alert(
-        err.response?.data?.message ||
-          "Error saving members"
-      );
-    }
+  console.log("RESPONSE:", err.response);
+
+  console.log("DATA:", err.response?.data);
+
+  alert(
+    JSON.stringify(err.response?.data) ||
+    "Error saving members"
+  );
+}
   };
 
   const handleSelect = (userId) => {
