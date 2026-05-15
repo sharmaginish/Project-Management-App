@@ -47,9 +47,23 @@ router.get(
 
     try {
 
-      const tasks = await Task.find()
-      .populate("assignedTo")
-      .populate("project");
+      let tasks;
+
+if(req.user.role === "Admin"){
+
+  tasks = await Task.find()
+  .populate("assignedTo")
+  .populate("project");
+
+}else{
+
+  tasks = await Task.find({
+    user:req.user.id
+  })
+  .populate("assignedTo")
+  .populate("project");
+
+}
 
       res.json(tasks);
 
