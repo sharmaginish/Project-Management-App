@@ -153,7 +153,7 @@ export default function Sidebar(){
           p-6
           flex
           flex-col
-          justify-between
+          justify-between overflow-y-auto
           border-white/10
           z-50
           transform
@@ -276,7 +276,7 @@ export default function Sidebar(){
 
         </div>
 
-        <div>
+        <div className="pb-4">
 
           <motion.div
 
@@ -284,7 +284,7 @@ export default function Sidebar(){
               scale:1.02
             }}
 
-            className="bg-gradient-to-r from-[#1f2937] to-[#111827] p-5 rounded-3xl border border-white/10 shadow-xl"
+            className="bg-gradient-to-r from-[#1f2937] to-[#111827] p-4 rounded-3xl border border-white/10 shadow-xl"
 
           >
 
@@ -294,7 +294,7 @@ export default function Sidebar(){
 
             </p>
 
-            <h2 className="text-2xl font-bold mt-2">
+            <h2 className="text-xl font-bold mt-2 break-words">
 
               {user?.name}
 
@@ -320,7 +320,7 @@ export default function Sidebar(){
 
             onClick={logout}
 
-            className="mt-5 w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 transition-all duration-300 p-4 rounded-2xl flex items-center justify-center gap-3 font-bold shadow-xl"
+            className="mt-3 w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 transition-all duration-300 p-4 rounded-2xl flex items-center justify-center gap-3 font-bold shadow-xl"
 
           >
 
