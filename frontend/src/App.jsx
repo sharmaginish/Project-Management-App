@@ -81,7 +81,7 @@ export default function App(){
 
         <Route
   path="/project/:id/tasks"
-  element={<ProjectTasks />}
+  element={<TaskSection />}
 />
 
       </Routes>
