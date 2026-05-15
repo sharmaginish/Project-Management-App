@@ -26,7 +26,7 @@ export default function Signup({ setShowSignup }) {
 
       alert("Signup Successful");
       setShowSignup(false);
-      window.location.href = "/login";
+      
 
     } catch (err) {
 
