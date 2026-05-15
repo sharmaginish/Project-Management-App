@@ -14,14 +14,14 @@ import { Link } from "react-router-dom";
 export default function Sidebar(){
 
   const user = JSON.parse(
-    localStorage.getItem("user")
+    sessionStorage.getItem("user")
   );
 
   const role = user?.role;
 
   const logout = () => {
 
-    localStorage.clear();
+    sessionStorage.clear();
 
     window.location.href="/login";
   };
