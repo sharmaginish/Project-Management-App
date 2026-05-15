@@ -21,11 +21,11 @@ export default function TaskSection() {
     localStorage.getItem("token");
 
   const userInfo = JSON.parse(
-    localStorage.getItem("user")
-  );
+  localStorage.getItem("user") || "{}"
+);
 
   const currentUserId =
-    userInfo?._id;
+  userInfo?._id || "";
 
   useEffect(() => {
 
