@@ -5,7 +5,8 @@ import {
   FaSignOutAlt,
   FaChartPie,
   FaCog,
-  FaUsers
+  FaUsers,
+  FaFolderOpen
 } from "react-icons/fa";
 
 import { Link } from "react-router-dom";
@@ -48,6 +49,18 @@ export default function Sidebar(){
             </div>
 
           </Link>
+
+          <Link to="/projects">
+
+  <div className="flex items-center gap-4 p-4 rounded-2xl hover:bg-[#1f2937] transition">
+
+    <FaFolderOpen />
+
+    Projects
+
+  </div>
+
+</Link>
 
           <Link to="/tasks">
 
