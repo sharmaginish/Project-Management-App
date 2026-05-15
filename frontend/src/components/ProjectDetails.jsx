@@ -18,7 +18,9 @@ export default function ProjectDetails() {
   const userInfo =
     JSON.parse(localStorage.getItem("user"));
 
-  const currentUserId = userInfo?._id;
+  const currentUserId = userInfo?._id ||
+  userInfo?.id ||
+  "";
 
   useEffect(() => {
 
@@ -86,7 +88,7 @@ export default function ProjectDetails() {
 
     // ONLY ADMIN CAN SELECT
     if (
-      project?.admin?._id !== currentUserId
+      project?.admin?._id !== String(currentUserId)
     ) {
       return;
     }

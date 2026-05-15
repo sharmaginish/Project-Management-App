@@ -261,4 +261,61 @@ router.put(
   }
 );
 
+/* =========================================
+   DELETE PROJECT
+========================================= */
+router.delete(
+  "/:id",
+  protect,
+
+  async (req, res) => {
+
+    try {
+
+      const project =
+        await Project.findById(
+          req.params.id
+        );
+
+      if (!project) {
+
+        return res.status(404).json({
+          message:
+            "Project not found",
+        });
+      }
+
+      // ONLY ADMIN
+      if (
+        project.admin.toString() !==
+        req.user.id
+      ) {
+
+        return res.status(403).json({
+          message:
+            "Only admin can delete project",
+        });
+      }
+
+      await Project.findByIdAndDelete(
+        req.params.id
+      );
+
+      res.json({
+        message:
+          "Project deleted",
+      });
+
+    } catch (err) {
+
+      console.log(err);
+
+      res.status(500).json({
+        message:
+          err.message,
+      });
+    }
+  }
+);
+
 module.exports = router;
