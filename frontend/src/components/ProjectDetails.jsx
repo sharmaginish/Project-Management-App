@@ -7,16 +7,29 @@ export default function ProjectDetails() {
   const { id } = useParams();
 
   const [users, setUsers] = useState([]);
+  const [project, setProject] = useState(null);
+
   const [selectedMembers, setSelectedMembers] = useState([]);
+
   const [loading, setLoading] = useState(false);
 
   const token = localStorage.getItem("token");
 
+  const userInfo =
+    JSON.parse(localStorage.getItem("user"));
+
+  const currentUserId = userInfo?._id;
+
   useEffect(() => {
+
     fetchUsers();
+
+    fetchProject();
+
   }, []);
 
   const fetchUsers = async () => {
+
     try {
 
       const res = await axios.get(
@@ -32,22 +45,58 @@ export default function ProjectDetails() {
 
     } catch (err) {
 
-      console.log("FETCH USERS ERROR:", err);
+      console.log(err);
 
-      alert(
-        err.response?.data?.message ||
-        "Failed to load users"
+      alert("Failed to load users");
+    }
+  };
+
+  const fetchProject = async () => {
+
+    try {
+
+      const res = await axios.get(
+        `https://project-management-app-jtoh.onrender.com/api/projects/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
+
+      setProject(res.data);
+
+      // AUTO SELECT EXISTING MEMBERS
+      if (res.data.members) {
+
+        setSelectedMembers(
+          res.data.members.map(
+            (member) => member._id
+          )
+        );
+      }
+
+    } catch (err) {
+
+      console.log(err);
     }
   };
 
   const handleSelect = (userId) => {
 
+    // ONLY ADMIN CAN SELECT
+    if (
+      project?.admin?._id !== currentUserId
+    ) {
+      return;
+    }
+
     if (selectedMembers.includes(userId)) {
 
       setSelectedMembers(
         selectedMembers.filter(
-          (memberId) => memberId !== userId
+          (memberId) =>
+            memberId !== userId
         )
       );
 
@@ -66,13 +115,6 @@ export default function ProjectDetails() {
 
       setLoading(true);
 
-      console.log("PROJECT ID:", id);
-
-      console.log(
-        "SELECTED MEMBERS:",
-        selectedMembers
-      );
-
       const res = await axios.put(
         `https://project-management-app-jtoh.onrender.com/api/projects/${id}/members`,
         {
@@ -85,18 +127,13 @@ export default function ProjectDetails() {
         }
       );
 
-      console.log("SUCCESS:", res.data);
+      console.log(res.data);
 
       alert("Members Saved Successfully");
 
     } catch (err) {
 
-      console.log("SAVE MEMBERS ERROR:", err);
-
-      console.log(
-        "BACKEND RESPONSE:",
-        err.response
-      );
+      console.log(err);
 
       alert(
         err.response?.data?.message ||
@@ -143,7 +180,7 @@ export default function ProjectDetails() {
 
           </div>
 
-          {/* Users */}
+          {/* USERS */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
             {users.map((user) => (
@@ -153,10 +190,17 @@ export default function ProjectDetails() {
                 onClick={() =>
                   handleSelect(user._id)
                 }
-                className={`cursor-pointer rounded-2xl p-5 border transition-all duration-300 ${
-                  selectedMembers.includes(user._id)
+                className={`rounded-2xl p-5 border transition-all duration-300 ${
+                  project?.admin?._id ===
+                  currentUserId
+                    ? "cursor-pointer"
+                    : "cursor-not-allowed opacity-80"
+                } ${
+                  selectedMembers.includes(
+                    user._id
+                  )
                     ? "bg-blue-600 border-blue-400 scale-[1.02]"
-                    : "bg-[#0f172a] border-gray-700 hover:border-blue-500 hover:scale-[1.01]"
+                    : "bg-[#0f172a] border-gray-700 hover:border-blue-500"
                 }`}
               >
 
@@ -171,7 +215,7 @@ export default function ProjectDetails() {
 
                   </div>
 
-                  {/* User Info */}
+                  {/* USER INFO */}
                   <div className="flex-1">
 
                     <h3 className="text-lg font-semibold">
@@ -184,7 +228,7 @@ export default function ProjectDetails() {
 
                   </div>
 
-                  {/* Checkbox */}
+                  {/* CHECKBOX */}
                   <input
                     type="checkbox"
                     checked={selectedMembers.includes(
@@ -202,7 +246,7 @@ export default function ProjectDetails() {
 
           </div>
 
-          {/* Empty State */}
+          {/* EMPTY */}
           {users.length === 0 && (
 
             <div className="text-center py-20 text-gray-400">
@@ -211,26 +255,31 @@ export default function ProjectDetails() {
 
           )}
 
-          {/* Button */}
-          <div className="mt-10 flex justify-end">
+          {/* ONLY ADMIN CAN SEE BUTTON */}
+          {project?.admin?._id ===
+            currentUserId && (
 
-            <button
-              onClick={saveMembers}
-              disabled={loading}
-              className={`px-8 py-3 rounded-2xl font-semibold shadow-2xl transition-all duration-300 ${
-                loading
-                  ? "bg-gray-600 cursor-not-allowed"
-                  : "bg-gradient-to-r from-blue-600 to-cyan-500 hover:scale-105"
-              }`}
-            >
+            <div className="mt-10 flex justify-end">
 
-              {loading
-                ? "Saving..."
-                : "Save Members"}
+              <button
+                onClick={saveMembers}
+                disabled={loading}
+                className={`px-8 py-3 rounded-2xl font-semibold shadow-2xl transition-all duration-300 ${
+                  loading
+                    ? "bg-gray-600 cursor-not-allowed"
+                    : "bg-gradient-to-r from-blue-600 to-cyan-500 hover:scale-105"
+                }`}
+              >
 
-            </button>
+                {loading
+                  ? "Saving..."
+                  : "Save Members"}
 
-          </div>
+              </button>
+
+            </div>
+
+          )}
 
         </div>
 
