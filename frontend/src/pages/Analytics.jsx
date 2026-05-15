@@ -29,9 +29,17 @@ export default function Analytics() {
 
   useEffect(()=>{
 
+  fetchAnalytics();
+
+  const interval = setInterval(()=>{
+
     fetchAnalytics();
 
-  },[]);
+  },5000);
+
+  return ()=> clearInterval(interval);
+
+},[]);
 
   const fetchAnalytics = async () => {
 
