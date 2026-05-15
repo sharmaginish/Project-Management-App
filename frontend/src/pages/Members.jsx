@@ -20,7 +20,7 @@ export default function Members() {
 
   const token = user?.token;
 
-  const role = localStorage.getItem("role");
+  const role = user?.role;
 
   useEffect(() => {
 
