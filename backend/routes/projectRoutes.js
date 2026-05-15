@@ -222,7 +222,7 @@ router.put(
       // VERY IMPORTANT ADMIN CHECK
       if (
         String(project.admin) !==
-        String(req.user.id)
+        String(req.user._id)
       ) {
 
         return res.status(403).json({

@@ -88,7 +88,7 @@ export default function ProjectDetails() {
 
     // ONLY ADMIN CAN SELECT
     if (
-      project?.admin?._id !== String(currentUserId)
+      String(project?.admin?._id) !== String(currentUserId)
     ) {
       return;
     }
@@ -258,11 +258,12 @@ export default function ProjectDetails() {
           )}
 
           {/* ONLY ADMIN CAN SEE BUTTON */}
-          {project?.admin?._id ===
+            {String(project?.admin?._id) ===
             String(currentUserId) && (
 
             <div className="mt-10 flex justify-end">
 
+             
               <button
                 onClick={saveMembers}
                 disabled={loading}

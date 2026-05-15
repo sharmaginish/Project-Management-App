@@ -175,7 +175,7 @@ router.put(
       // STRICT ADMIN CHECK
       if (
         String(task.admin) !==
-        String(req.user.id)
+        String(req.user._id)
       ) {
 
         return res.status(403).json({
