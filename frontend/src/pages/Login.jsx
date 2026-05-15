@@ -5,7 +5,7 @@ import {
 import {
   auth,
   provider
-} from "../firebase.js";
+} from "../firebase";
 
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
