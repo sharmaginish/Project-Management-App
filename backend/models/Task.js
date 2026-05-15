@@ -1,55 +1,43 @@
-// backend/models/Task.js
-
 const mongoose = require("mongoose");
 
-const taskSchema = new mongoose.Schema(
-  {
-    title: {
-      type: String,
-      required: true,
-    },
+const taskSchema =
+  new mongoose.Schema(
+    {
+      title: {
+        type: String,
+        required: true,
+      },
 
-    description: {
-      type: String,
-      default: "",
-    },
+      description: {
+        type: String,
+      },
 
-    status: {
-      type: String,
-      enum: [
-        "Pending",
-        "In Progress",
-        "Completed",
-      ],
-      default: "Pending",
-    },
+      priority: {
+        type: String,
+        default: "Medium",
+      },
 
-    priority: {
-      type: String,
-      enum: ["Low", "Medium", "High"],
-      default: "Medium",
-    },
+      status: {
+        type: String,
+        default: "Pending",
+      },
 
-    assignedTo: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
+      project: {
+        type:
+          mongoose.Schema.Types.ObjectId,
+        ref: "Project",
+      },
 
-    project: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Project",
-      required: true,
+      createdBy: {
+        type:
+          mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
     },
-
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
+    {
+      timestamps: true,
+    }
+  );
 
 module.exports = mongoose.model(
   "Task",

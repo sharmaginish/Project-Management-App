@@ -1,5 +1,3 @@
-// backend/routes/taskRoutes.js
-
 const express = require("express");
 
 const Task = require("../models/Task");
@@ -12,57 +10,18 @@ const protect = require(
 const router = express.Router();
 
 
-
-/* =========================================
-   GET ALL TASKS OF PROJECT
-========================================= */
-router.get(
-  "/project/:projectId",
-  protect,
-
-  async (req, res) => {
-    try {
-
-      const tasks =
-        await Task.find({
-          project: req.params.projectId,
-        })
-          .populate(
-            "assignedTo",
-            "name email"
-          )
-          .sort({ createdAt: -1 });
-
-      res.json(tasks);
-
-    } catch (err) {
-
-      console.log(err);
-
-      res.status(500).json({
-        message: err.message,
-      });
-    }
-  }
-);
-
-
-
-/* =========================================
-   CREATE TASK
-   ONLY ADMIN
-========================================= */
+// CREATE TASK
 router.post(
   "/",
   protect,
 
   async (req, res) => {
+
     try {
 
       const {
         title,
         description,
-        assignedTo,
         priority,
         projectId,
       } = req.body;
@@ -93,57 +52,10 @@ router.post(
         await Task.create({
           title,
           description,
-          assignedTo,
           priority,
           project: projectId,
           createdBy: req.user.id,
         });
-
-      const populatedTask =
-        await Task.findById(task._id)
-          .populate(
-            "assignedTo",
-            "name email"
-          );
-
-      res.json(populatedTask);
-
-    } catch (err) {
-
-      console.log(err);
-
-      res.status(500).json({
-        message: err.message,
-      });
-    }
-  }
-);
-
-
-
-/* =========================================
-   UPDATE TASK STATUS
-========================================= */
-router.put(
-  "/:id",
-  protect,
-
-  async (req, res) => {
-    try {
-
-      const task =
-        await Task.findById(req.params.id);
-
-      if (!task) {
-
-        return res.status(404).json({
-          message: "Task not found",
-        });
-      }
-
-      task.status = req.body.status;
-
-      await task.save();
 
       res.json(task);
 
@@ -159,48 +71,23 @@ router.put(
 );
 
 
-
-/* =========================================
-   DELETE TASK
-   ONLY ADMIN
-========================================= */
-router.delete(
-  "/:id",
+// GET TASKS
+router.get(
+  "/project/:projectId",
   protect,
 
   async (req, res) => {
+
     try {
 
-      const task =
-        await Task.findById(req.params.id)
-          .populate("project");
-
-      if (!task) {
-
-        return res.status(404).json({
-          message: "Task not found",
+      const tasks =
+        await Task.find({
+          project: req.params.projectId,
+        }).sort({
+          createdAt: -1,
         });
-      }
 
-      // ONLY ADMIN
-      if (
-        task.project.admin.toString() !==
-        req.user.id
-      ) {
-
-        return res.status(403).json({
-          message:
-            "Only admin can delete tasks",
-        });
-      }
-
-      await Task.findByIdAndDelete(
-        req.params.id
-      );
-
-      res.json({
-        message: "Task deleted",
-      });
+      res.json(tasks);
 
     } catch (err) {
 
