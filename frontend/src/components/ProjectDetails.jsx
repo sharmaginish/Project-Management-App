@@ -53,36 +53,34 @@ export default function ProjectDetails() {
     }
   };
 
-  const fetchProject = async () => {
+  const fetchProjects = async () => {
 
-    try {
+  try {
 
-      const res = await axios.get(
-        `https://project-management-app-jtoh.onrender.com/api/projects/${id}`,
+    setLoading(true);
+
+    const res =
+      await axios.get(
+        "https://project-management-app-jtoh.onrender.com/api/projects",
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization:
+              `Bearer ${token}`,
           },
         }
       );
 
-      setProject(res.data);
+    setProjects(res.data);
 
-      // AUTO SELECT EXISTING MEMBERS
-      if (res.data.members) {
+  } catch (err) {
 
-        setSelectedMembers(
-          res.data.members.map(
-            (member) => member._id
-          )
-        );
-      }
+    console.log(err);
 
-    } catch (err) {
+  } finally {
 
-      console.log(err);
-    }
-  };
+    setLoading(false);
+  }
+};
 
   const handleSelect = (userId) => {
 

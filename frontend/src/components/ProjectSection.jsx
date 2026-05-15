@@ -43,6 +43,8 @@ export default function Projects() {
 
   try {
 
+    setLoading(true);
+
     const res =
       await axios.get(
         "https://project-management-app-jtoh.onrender.com/api/projects",
@@ -54,22 +56,17 @@ export default function Projects() {
         }
       );
 
-    console.log(
-      "PROJECTS:",
-      res.data
-    );
-
     setProjects(res.data);
 
   } catch (err) {
 
-    console.log(
-      "FETCH PROJECT ERROR:",
-      err
-    );
+    console.log(err);
+
+  } finally {
+
+    setLoading(false);
   }
 };
-
   const createProject = async () => {
 
     if(role !== "Admin"){
@@ -141,6 +138,9 @@ export default function Projects() {
     }
 
   };
+
+  const [loading, setLoading] =
+  useState(true);
 
   const updateProgress = async (
     id,
@@ -282,28 +282,17 @@ export default function Projects() {
           )
         }
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-          {
-            loading ? (
+  {loading ? (
 
-              <div className="text-2xl text-gray-400">
+    <div className="col-span-2 text-center py-20 text-gray-400 text-lg">
+      Loading projects...
+    </div>
 
-                Loading projects...
+  ) : (
 
-              </div>
-
-            ) : projects.length === 0 ? (
-
-              <div className="text-2xl text-gray-400">
-
-                No Projects Found
-
-              </div>
-
-            ) : (
-
-              projects.map((project,index)=>(
+    projects.map((project) => (
 
                 <motion.div
 
@@ -459,8 +448,7 @@ export default function Projects() {
 
               ))
 
-            )
-          }
+            )}
 
         </div>
 
