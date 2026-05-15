@@ -1,21 +1,71 @@
+// frontend/src/pages/ProjectTasks.jsx
+
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 
-export default function TaskSection() {
+export default function ProjectTasks() {
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const { id } = useParams();
 
   const [tasks, setTasks] = useState([]);
 
-  const token = localStorage.getItem("token");
+  const [project, setProject] =
+    useState(null);
 
-  const fetchTasks = async () => {
+  const [title, setTitle] =
+    useState("");
 
+  const [description, setDescription] =
+    useState("");
+
+  const [priority, setPriority] =
+    useState("Medium");
+
+  const [loading, setLoading] =
+    useState(false);
+
+  const token =
+    localStorage.getItem("token");
+
+  const userInfo = JSON.parse(
+    localStorage.getItem("user")
+  );
+
+  const currentUserId = userInfo?._id;
+
+  useEffect(() => {
+
+    fetchProject();
+
+    fetchTasks();
+
+  }, []);
+
+  const fetchProject = async () => {
     try {
 
       const res = await axios.get(
-        "https://project-management-app-jtoh.onrender.com/api/tasks",
+        `https://project-management-app-jtoh.onrender.com/api/projects/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setProject(res.data);
+
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchTasks = async () => {
+    try {
+
+      const res = await axios.get(
+        `https://project-management-app-jtoh.onrender.com/api/tasks/project/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -26,178 +76,169 @@ export default function TaskSection() {
       setTasks(res.data);
 
     } catch (err) {
-
       console.log(err);
-
     }
-
   };
-
-  useEffect(() => {
-
-    fetchTasks();
-
-  }, []);
 
   const createTask = async () => {
 
     try {
 
-      await axios.post(
-        "https://project-management-app-jtoh.onrender.com/api/tasks",
+      setLoading(true);
 
+      await axios.post(
+        `https://project-management-app-jtoh.onrender.com/api/tasks`,
         {
           title,
           description,
-          status: "Pending",
+          priority,
+          projectId: id,
         },
-
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-
-      alert("Task Created");
 
       setTitle("");
       setDescription("");
 
       fetchTasks();
 
+      alert("Task Created");
+
     } catch (err) {
 
       console.log(err);
 
-    }
-
-  };
-
-  const updateStatus = async (
-    id,
-    status
-  ) => {
-
-    try {
-
-      await axios.put(
-        `https://project-management-app-jtoh.onrender.com/api/tasks/${id}`,
-
-        {
-          status,
-        },
-
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      alert(
+        err.response?.data?.message ||
+          "Error creating task"
       );
 
-      fetchTasks();
+    } finally {
 
-    } catch (err) {
-
-      console.log(err);
-
+      setLoading(false);
     }
-
   };
 
   return (
+    <div className="min-h-screen bg-[#0f172a] p-6 text-white">
 
-    <div className="mt-10">
+      <div className="max-w-6xl mx-auto">
 
-      <div className="bg-white p-6 rounded-xl shadow">
+        <div className="mb-8">
 
-        <h2 className="text-2xl font-bold mb-4">
-          Create Task
-        </h2>
+          <h1 className="text-4xl font-bold">
+            Project Tasks
+          </h1>
 
-        <input
-          type="text"
-          placeholder="Task Title"
-          className="border p-3 w-full mb-3 rounded"
-          value={title}
-          onChange={(e) =>
-            setTitle(e.target.value)
-          }
-        />
+          <p className="text-gray-400 mt-2">
+            Admin controlled task system
+          </p>
 
-        <textarea
-          placeholder="Task Description"
-          className="border p-3 w-full mb-3 rounded"
-          value={description}
-          onChange={(e) =>
-            setDescription(e.target.value)
-          }
-        />
+        </div>
 
-        <button
-          onClick={createTask}
-          className="bg-green-500 text-white px-5 py-3 rounded"
-        >
-          Create Task
-        </button>
 
-      </div>
+        {/* ONLY ADMIN */}
+        {project?.admin?._id ===
+          currentUserId && (
 
-      <div className="mt-8">
+          <div className="bg-[#1e293b] p-6 rounded-3xl border border-gray-700 mb-8">
 
-        <h2 className="text-2xl font-bold mb-4">
-          Tasks
-        </h2>
+            <h2 className="text-2xl font-semibold mb-5">
+              Create Task
+            </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="grid gap-4">
+
+              <input
+                type="text"
+                placeholder="Task title"
+                value={title}
+                onChange={(e) =>
+                  setTitle(e.target.value)
+                }
+                className="bg-[#0f172a] border border-gray-700 rounded-xl p-4 outline-none"
+              />
+
+              <textarea
+                placeholder="Task description"
+                value={description}
+                onChange={(e) =>
+                  setDescription(
+                    e.target.value
+                  )
+                }
+                className="bg-[#0f172a] border border-gray-700 rounded-xl p-4 outline-none h-32"
+              />
+
+              <select
+                value={priority}
+                onChange={(e) =>
+                  setPriority(e.target.value)
+                }
+                className="bg-[#0f172a] border border-gray-700 rounded-xl p-4 outline-none"
+              >
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+              </select>
+
+              <button
+                onClick={createTask}
+                disabled={loading}
+                className="bg-gradient-to-r from-blue-600 to-cyan-500 px-8 py-4 rounded-2xl font-semibold"
+              >
+                {loading
+                  ? "Creating..."
+                  : "Create Task"}
+              </button>
+
+            </div>
+
+          </div>
+
+        )}
+
+
+        {/* TASKS */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
           {tasks.map((task) => (
 
             <div
               key={task._id}
-              className="bg-white p-5 rounded-xl shadow"
+              className="bg-[#1e293b] border border-gray-700 rounded-3xl p-6"
             >
 
-              <h3 className="text-xl font-bold">
-                {task.title}
-              </h3>
+              <div className="flex items-center justify-between mb-4">
 
-              <p className="mt-2 text-gray-600">
+                <h2 className="text-xl font-semibold">
+                  {task.title}
+                </h2>
+
+                <span className="bg-blue-600 px-3 py-1 rounded-lg text-sm">
+                  {task.priority}
+                </span>
+
+              </div>
+
+              <p className="text-gray-400 mb-5">
                 {task.description}
               </p>
 
-              <p className="mt-3 font-semibold">
-                Status:
-                <span className="ml-2">
+              <div className="flex items-center justify-between">
+
+                <span className="text-sm bg-green-600 px-3 py-1 rounded-lg">
                   {task.status}
                 </span>
-              </p>
 
-              <div className="flex gap-3 mt-4">
-
-                <button
-                  onClick={() =>
-                    updateStatus(
-                      task._id,
-                      "In Progress"
-                    )
-                  }
-                  className="bg-yellow-500 text-white px-3 py-2 rounded"
-                >
-                  In Progress
-                </button>
-
-                <button
-                  onClick={() =>
-                    updateStatus(
-                      task._id,
-                      "Completed"
-                    )
-                  }
-                  className="bg-blue-500 text-white px-3 py-2 rounded"
-                >
-                  Completed
-                </button>
+                <span className="text-sm text-gray-400">
+                  {task.assignedTo?.name ||
+                    "Unassigned"}
+                </span>
 
               </div>
 
@@ -210,7 +251,5 @@ export default function TaskSection() {
       </div>
 
     </div>
-
   );
-
 }

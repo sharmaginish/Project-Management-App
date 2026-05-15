@@ -79,6 +79,11 @@ export default function App(){
           element={<ProjectDetails />}
         />
 
+        <Route
+  path="/project/:id/tasks"
+  element={<ProjectTasks />}
+/>
+
       </Routes>
 
     </BrowserRouter>
