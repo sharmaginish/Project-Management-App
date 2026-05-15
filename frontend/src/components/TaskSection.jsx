@@ -1,31 +1,49 @@
-import { useEffect, useState } from "react";
+// frontend/src/components/TaskSection.jsx
+
+import {
+  useEffect,
+  useState,
+} from "react";
+
 import { useParams } from "react-router-dom";
+
 import axios from "axios";
 
 export default function TaskSection() {
 
   const { id } = useParams();
 
-  const [tasks, setTasks] = useState([]);
-  const [project, setProject] = useState(null);
+  const [tasks, setTasks] =
+    useState([]);
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [priority, setPriority] =
+  const [project, setProject] =
+    useState(null);
+
+  const [title, setTitle] =
+    useState("");
+
+  const [description,
+    setDescription] =
+    useState("");
+
+  const [priority,
+    setPriority] =
     useState("Medium");
 
-  const [loading, setLoading] =
+  const [loading,
+    setLoading] =
     useState(false);
 
   const token =
     localStorage.getItem("token");
 
   const userInfo = JSON.parse(
-  localStorage.getItem("user") || "{}"
-);
+    localStorage.getItem("user") || "{}"
+  );
 
   const currentUserId =
-  userInfo?._id || "";
+    userInfo?._id || "";
+
 
   useEffect(() => {
 
@@ -35,18 +53,23 @@ export default function TaskSection() {
 
   }, []);
 
-  const fetchProject = async () => {
+
+  // FETCH PROJECT
+  const fetchProject =
+    async () => {
 
     try {
 
-      const res = await axios.get(
-        `https://project-management-app-jtoh.onrender.com/api/projects/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res =
+        await axios.get(
+          `https://project-management-app-jtoh.onrender.com/api/projects/${id}`,
+          {
+            headers: {
+              Authorization:
+                `Bearer ${token}`,
+            },
+          }
+        );
 
       setProject(res.data);
 
@@ -56,18 +79,23 @@ export default function TaskSection() {
     }
   };
 
-  const fetchTasks = async () => {
+
+  // FETCH TASKS
+  const fetchTasks =
+    async () => {
 
     try {
 
-      const res = await axios.get(
-        `https://project-management-app-jtoh.onrender.com/api/tasks/project/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res =
+        await axios.get(
+          `https://project-management-app-jtoh.onrender.com/api/tasks/project/${id}`,
+          {
+            headers: {
+              Authorization:
+                `Bearer ${token}`,
+            },
+          }
+        );
 
       setTasks(res.data);
 
@@ -77,32 +105,38 @@ export default function TaskSection() {
     }
   };
 
-  const createTask = async () => {
+
+  // CREATE TASK
+  const createTask =
+    async () => {
 
     try {
 
       setLoading(true);
 
-      const res = await axios.post(
-        `https://project-management-app-jtoh.onrender.com/api/tasks`,
-        {
-          title,
-          description,
-          priority,
-          projectId: id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+      const res =
+        await axios.post(
+          `https://project-management-app-jtoh.onrender.com/api/tasks`,
+          {
+            title,
+            description,
+            priority,
+            projectId: id,
           },
-        }
-      );
+          {
+            headers: {
+              Authorization:
+                `Bearer ${token}`,
+            },
+          }
+        );
 
       console.log(res.data);
 
       alert("Task Created");
 
       setTitle("");
+
       setDescription("");
 
       fetchTasks();
@@ -122,6 +156,7 @@ export default function TaskSection() {
     }
   };
 
+
   return (
     <div className="min-h-screen bg-[#0f172a] p-6 text-white">
 
@@ -135,10 +170,11 @@ export default function TaskSection() {
           </h1>
 
           <p className="text-gray-400 mt-2">
-            Admin controlled task system
+            Only admin can create tasks
           </p>
 
         </div>
+
 
         {/* ONLY ADMIN */}
         {project?.admin?._id ===
@@ -157,7 +193,9 @@ export default function TaskSection() {
                 placeholder="Task title"
                 value={title}
                 onChange={(e) =>
-                  setTitle(e.target.value)
+                  setTitle(
+                    e.target.value
+                  )
                 }
                 className="bg-[#0f172a] border border-gray-700 rounded-xl p-4 outline-none"
               />
@@ -176,7 +214,9 @@ export default function TaskSection() {
               <select
                 value={priority}
                 onChange={(e) =>
-                  setPriority(e.target.value)
+                  setPriority(
+                    e.target.value
+                  )
                 }
                 className="bg-[#0f172a] border border-gray-700 rounded-xl p-4 outline-none"
               >
@@ -213,7 +253,8 @@ export default function TaskSection() {
 
         )}
 
-        {/* TASKS */}
+
+        {/* TASK LIST */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
           {tasks.map((task) => (
@@ -243,11 +284,6 @@ export default function TaskSection() {
 
                 <span className="text-sm bg-green-600 px-3 py-1 rounded-lg">
                   {task.status}
-                </span>
-
-                <span className="text-sm text-gray-400">
-                  {task.assignedTo?.name ||
-                    "Unassigned"}
                 </span>
 
               </div>
