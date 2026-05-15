@@ -82,46 +82,62 @@ export default function ProjectTasks() {
 
   const createTask = async () => {
 
-    try {
+  try {
 
-      setLoading(true);
+    console.log("BUTTON CLICKED");
 
-      await axios.post(
-        `https://project-management-app-jtoh.onrender.com/api/tasks`,
-        {
-          title,
-          description,
-          priority,
-          projectId: id,
+    console.log("PROJECT ID:", id);
+
+    console.log("TITLE:", title);
+
+    console.log("TOKEN:", token);
+
+    setLoading(true);
+
+    const res = await axios.post(
+      `https://project-management-app-jtoh.onrender.com/api/tasks`,
+      {
+        title,
+        description,
+        priority,
+        projectId: id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      }
+    );
 
-      setTitle("");
-      setDescription("");
+    console.log("SUCCESS:", res.data);
 
-      fetchTasks();
+    alert("Task Created");
 
-      alert("Task Created");
+    setTitle("");
 
-    } catch (err) {
+    setDescription("");
 
-      console.log(err);
+    fetchTasks();
 
-      alert(
-        err.response?.data?.message ||
-          "Error creating task"
-      );
+  } catch (err) {
 
-    } finally {
+    console.log("FULL ERROR:", err);
 
-      setLoading(false);
-    }
-  };
+    console.log(
+      "BACKEND RESPONSE:",
+      err.response
+    );
+
+    alert(
+      err.response?.data?.message ||
+      "Error creating task"
+    );
+
+  } finally {
+
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-[#0f172a] p-6 text-white">
