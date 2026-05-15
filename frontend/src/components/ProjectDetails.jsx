@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function ProjectDetails() {
+
   const { id } = useParams();
+
   const [users, setUsers] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -16,6 +18,7 @@ export default function ProjectDetails() {
 
   const fetchUsers = async () => {
     try {
+
       const res = await axios.get(
         "https://project-management-app-jtoh.onrender.com/api/projects/users",
         {
@@ -26,27 +29,30 @@ export default function ProjectDetails() {
       );
 
       setUsers(res.data);
-    } 
-    catch (err) {
-  console.log("FULL ERROR:", err);
 
-  console.log("RESPONSE:", err.response);
+    } catch (err) {
 
-  console.log("DATA:", err.response?.data);
+      console.log("FETCH USERS ERROR:", err);
 
-  alert(
-    JSON.stringify(err.response?.data) ||
-    "Error saving members"
-  );
-}
+      alert(
+        err.response?.data?.message ||
+        "Failed to load users"
+      );
+    }
   };
 
   const handleSelect = (userId) => {
+
     if (selectedMembers.includes(userId)) {
+
       setSelectedMembers(
-        selectedMembers.filter((id) => id !== userId)
+        selectedMembers.filter(
+          (memberId) => memberId !== userId
+        )
       );
+
     } else {
+
       setSelectedMembers([
         ...selectedMembers,
         userId,
@@ -55,7 +61,9 @@ export default function ProjectDetails() {
   };
 
   const saveMembers = async () => {
+
     try {
+
       setLoading(true);
 
       console.log("PROJECT ID:", id);
@@ -66,7 +74,7 @@ export default function ProjectDetails() {
       );
 
       const res = await axios.put(
-        `https://project-management-app-jtoh.onrender.com/api/projects/${projectId}/members`,
+        `https://project-management-app-jtoh.onrender.com/api/projects/${id}/members`,
         {
           members: selectedMembers,
         },
@@ -77,27 +85,38 @@ export default function ProjectDetails() {
         }
       );
 
-      console.log(res.data);
+      console.log("SUCCESS:", res.data);
 
       alert("Members Saved Successfully");
+
     } catch (err) {
-      console.log(err.response);
+
+      console.log("SAVE MEMBERS ERROR:", err);
+
+      console.log(
+        "BACKEND RESPONSE:",
+        err.response
+      );
 
       alert(
         err.response?.data?.message ||
-          "Error saving members"
+        "Error saving members"
       );
+
     } finally {
+
       setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-[#0f172a] p-6 text-white">
+
       <div className="max-w-5xl mx-auto">
 
         {/* Header */}
         <div className="mb-8">
+
           <h1 className="text-4xl font-bold">
             Project Members
           </h1>
@@ -105,6 +124,7 @@ export default function ProjectDetails() {
           <p className="text-gray-400 mt-2">
             Manage your team professionally
           </p>
+
         </div>
 
         {/* Main Card */}
@@ -112,6 +132,7 @@ export default function ProjectDetails() {
 
           {/* Top */}
           <div className="flex items-center justify-between mb-8">
+
             <h2 className="text-2xl font-semibold">
               Team Members
             </h2>
@@ -119,36 +140,40 @@ export default function ProjectDetails() {
             <div className="bg-blue-600 px-4 py-2 rounded-xl text-sm font-medium">
               {selectedMembers.length} Selected
             </div>
+
           </div>
 
           {/* Users */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
             {users.map((user) => (
+
               <div
                 key={user._id}
                 onClick={() =>
                   handleSelect(user._id)
                 }
                 className={`cursor-pointer rounded-2xl p-5 border transition-all duration-300 ${
-                  selectedMembers.includes(
-                    user._id
-                  )
+                  selectedMembers.includes(user._id)
                     ? "bg-blue-600 border-blue-400 scale-[1.02]"
                     : "bg-[#0f172a] border-gray-700 hover:border-blue-500 hover:scale-[1.01]"
                 }`}
               >
+
                 <div className="flex items-center gap-4">
 
                   {/* Avatar */}
                   <div className="w-14 h-14 rounded-full bg-gradient-to-r from-cyan-400 to-blue-600 flex items-center justify-center text-xl font-bold">
+
                     {user.name
                       ?.charAt(0)
                       .toUpperCase()}
+
                   </div>
 
                   {/* User Info */}
                   <div className="flex-1">
+
                     <h3 className="text-lg font-semibold">
                       {user.name}
                     </h3>
@@ -156,6 +181,7 @@ export default function ProjectDetails() {
                     <p className="text-gray-300 text-sm">
                       {user.email}
                     </p>
+
                   </div>
 
                   {/* Checkbox */}
@@ -167,21 +193,27 @@ export default function ProjectDetails() {
                     readOnly
                     className="w-5 h-5 accent-blue-500"
                   />
+
                 </div>
+
               </div>
+
             ))}
 
           </div>
 
-          {/* Empty */}
+          {/* Empty State */}
           {users.length === 0 && (
+
             <div className="text-center py-20 text-gray-400">
               No users found
             </div>
+
           )}
 
           {/* Button */}
           <div className="mt-10 flex justify-end">
+
             <button
               onClick={saveMembers}
               disabled={loading}
@@ -191,13 +223,19 @@ export default function ProjectDetails() {
                   : "bg-gradient-to-r from-blue-600 to-cyan-500 hover:scale-105"
               }`}
             >
+
               {loading
                 ? "Saving..."
                 : "Save Members"}
+
             </button>
+
           </div>
+
         </div>
+
       </div>
+
     </div>
   );
 }
