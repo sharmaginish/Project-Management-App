@@ -18,11 +18,12 @@ export default function Dashboard() {
 
   const [loading, setLoading] = useState(true);
 
-  const token = user?.token;;
-
+  // FIXED USER + TOKEN
   const user = JSON.parse(
     localStorage.getItem("user")
   );
+
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
 
@@ -34,11 +35,13 @@ export default function Dashboard() {
 
     try {
 
+      setLoading(true);
+
       const taskRes = await axios.get(
         "https://project-management-app-jtoh.onrender.com/api/tasks",
         {
-          headers:{
-            Authorization:`Bearer ${token}`
+          headers: {
+            Authorization: `Bearer ${token}`
           }
         }
       );
@@ -46,8 +49,8 @@ export default function Dashboard() {
       const projectRes = await axios.get(
         "https://project-management-app-jtoh.onrender.com/api/projects",
         {
-          headers:{
-            Authorization:`Bearer ${token}`
+          headers: {
+            Authorization: `Bearer ${token}`
           }
         }
       );
@@ -56,11 +59,11 @@ export default function Dashboard() {
 
       setProjects(projectRes.data);
 
-      setLoading(false);
-
-    } catch(err){
+    } catch (err) {
 
       console.log(err);
+
+    } finally {
 
       setLoading(false);
 
@@ -69,7 +72,7 @@ export default function Dashboard() {
   };
 
   const completedTasks = tasks.filter(
-    (task)=>
+    (task) =>
       task.status === "Completed"
   ).length;
 
@@ -81,17 +84,17 @@ export default function Dashboard() {
 
       <div className="md:ml-72 p-4 md:p-10">
 
+        {/* HEADER */}
+
         <div className="mb-10">
 
-          <h1 className="text-3xl md:text-5xlxl font-bold">
+          <h1 className="text-3xl md:text-5xl font-bold break-words">
 
-            Welcome Back,
-            {" "}
-            {user?.name}
+            Welcome Back, {user?.name}
 
           </h1>
 
-          <p className="text-gray-400 mt-3 text-lg">
+          <p className="text-gray-400 mt-3 text-base md:text-lg">
 
             Manage projects smarter and faster.
 
@@ -99,10 +102,12 @@ export default function Dashboard() {
 
         </div>
 
+        {/* LOADING */}
+
         {
           loading ? (
 
-            <div className="text-2xl text-gray-400">
+            <div className="text-xl md:text-2xl text-gray-400">
 
               Loading dashboard...
 
@@ -112,11 +117,15 @@ export default function Dashboard() {
 
             <>
 
+              {/* STATS */}
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
 
-                <div className="bg-[#111827] p-8 rounded-3xl border border-white/10">
+                {/* TASKS */}
 
-                  <div className="flex items-center justify-between">
+                <div className="bg-[#111827] p-6 md:p-8 rounded-3xl border border-white/10">
+
+                  <div className="flex items-center justify-between gap-4">
 
                     <div>
 
@@ -126,7 +135,7 @@ export default function Dashboard() {
 
                       </p>
 
-                      <h2 className="text-3xl md:text-5xlxl font-bold mt-4">
+                      <h2 className="text-3xl md:text-5xl font-bold mt-4">
 
                         {tasks.length}
 
@@ -134,15 +143,17 @@ export default function Dashboard() {
 
                     </div>
 
-                    <FaTasks className="text-3xl md:text-5xlxl text-indigo-400" />
+                    <FaTasks className="text-3xl md:text-5xl text-indigo-400 flex-shrink-0" />
 
                   </div>
 
                 </div>
 
-                <div className="bg-[#111827] p-8 rounded-3xl border border-white/10">
+                {/* PROJECTS */}
 
-                  <div className="flex items-center justify-between">
+                <div className="bg-[#111827] p-6 md:p-8 rounded-3xl border border-white/10">
+
+                  <div className="flex items-center justify-between gap-4">
 
                     <div>
 
@@ -152,7 +163,7 @@ export default function Dashboard() {
 
                       </p>
 
-                      <h2 className="text-3xl md:text-5xlxl font-bold mt-4">
+                      <h2 className="text-3xl md:text-5xl font-bold mt-4">
 
                         {projects.length}
 
@@ -160,15 +171,17 @@ export default function Dashboard() {
 
                     </div>
 
-                    <FaFolderOpen className="text-3xl md:text-5xlxl text-purple-400" />
+                    <FaFolderOpen className="text-3xl md:text-5xl text-purple-400 flex-shrink-0" />
 
                   </div>
 
                 </div>
 
-                <div className="bg-[#111827] p-8 rounded-3xl border border-white/10">
+                {/* COMPLETED */}
 
-                  <div className="flex items-center justify-between">
+                <div className="bg-[#111827] p-6 md:p-8 rounded-3xl border border-white/10">
+
+                  <div className="flex items-center justify-between gap-4">
 
                     <div>
 
@@ -178,7 +191,7 @@ export default function Dashboard() {
 
                       </p>
 
-                      <h2 className="text-3xl md:text-5xlxl font-bold mt-4">
+                      <h2 className="text-3xl md:text-5xl font-bold mt-4">
 
                         {completedTasks}
 
@@ -186,7 +199,7 @@ export default function Dashboard() {
 
                     </div>
 
-                    <FaCheckCircle className="text-3xl md:text-5xlxl text-green-400" />
+                    <FaCheckCircle className="text-3xl md:text-5xl text-green-400 flex-shrink-0" />
 
                   </div>
 
@@ -194,9 +207,11 @@ export default function Dashboard() {
 
               </div>
 
-              <div className="bg-[#111827] p-8 rounded-3xl border border-white/10">
+              {/* RECENT ACTIVITY */}
 
-                <h2 className="text-3xl font-bold mb-6">
+              <div className="bg-[#111827] p-6 md:p-8 rounded-3xl border border-white/10">
+
+                <h2 className="text-2xl md:text-3xl font-bold mb-6">
 
                   Recent Activity
 
@@ -215,22 +230,32 @@ export default function Dashboard() {
 
                     ) : (
 
-                      tasks.slice(0,5).map((task)=>(
+                      tasks.slice(0, 5).map((task) => (
 
                         <div
                           key={task._id}
-                          className="bg-[#1f2937] p-5 rounded-2xl flex justify-between"
+                          className="
+                            bg-[#1f2937]
+                            p-5
+                            rounded-2xl
+                            flex
+                            flex-col
+                            md:flex-row
+                            md:justify-between
+                            md:items-center
+                            gap-4
+                          "
                         >
 
-                          <div>
+                          <div className="min-w-0">
 
-                            <h3 className="font-bold text-lg">
+                            <h3 className="font-bold text-lg break-words">
 
                               {task.title}
 
                             </h3>
 
-                            <p className="text-gray-400 mt-1">
+                            <p className="text-gray-400 mt-1 break-words">
 
                               {task.description}
 
@@ -238,7 +263,7 @@ export default function Dashboard() {
 
                           </div>
 
-                          <div className="bg-indigo-500/20 text-indigo-400 px-4 py-2 rounded-full h-fit">
+                          <div className="bg-indigo-500/20 text-indigo-400 px-4 py-2 rounded-full h-fit w-fit">
 
                             {task.status}
 
