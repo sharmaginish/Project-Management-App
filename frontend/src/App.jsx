@@ -19,7 +19,7 @@ import Members from "./pages/Members";
 import ProjectDetails from "./components/ProjectDetails";
 
 // IMPORT TASK SECTION
-import TaskSection from "./pages/TaskSection";
+import TaskSection from "./components/TaskSection";
 
 export default function App() {
 
