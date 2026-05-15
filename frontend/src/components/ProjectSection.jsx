@@ -41,30 +41,34 @@ export default function Projects() {
 
   const fetchProjects = async () => {
 
-    try {
+  try {
 
-      const res = await axios.get(
+    const res =
+      await axios.get(
         "https://project-management-app-jtoh.onrender.com/api/projects",
         {
-          headers:{
-            Authorization:`Bearer ${token}`
-          }
+          headers: {
+            Authorization:
+              `Bearer ${token}`,
+          },
         }
       );
 
-      setProjects(res.data);
+    console.log(
+      "PROJECTS:",
+      res.data
+    );
 
-      setLoading(false);
+    setProjects(res.data);
 
-    } catch(err){
+  } catch (err) {
 
-      console.log(err);
-
-      setLoading(false);
-
-    }
-
-  };
+    console.log(
+      "FETCH PROJECT ERROR:",
+      err
+    );
+  }
+};
 
   const createProject = async () => {
 

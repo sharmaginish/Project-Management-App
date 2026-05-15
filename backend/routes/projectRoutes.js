@@ -90,17 +90,15 @@ router.get(
    GET SINGLE PROJECT
 ========================================= */
 router.get(
-  "/:id",
+  "/",
   protect,
 
   async (req, res) => {
 
     try {
 
-      const project =
-        await Project.findById(
-          req.params.id
-        )
+      const projects =
+        await Project.find()
           .populate(
             "admin",
             "name email"
@@ -108,17 +106,12 @@ router.get(
           .populate(
             "members",
             "name email"
-          );
+          )
+          .sort({
+            createdAt: -1,
+          });
 
-      if (!project) {
-
-        return res.status(404).json({
-          message:
-            "Project not found",
-        });
-      }
-
-      res.json(project);
+      res.json(projects);
 
     } catch (err) {
 
@@ -131,8 +124,6 @@ router.get(
     }
   }
 );
-
-
 /* =========================================
    CREATE PROJECT
 ========================================= */
