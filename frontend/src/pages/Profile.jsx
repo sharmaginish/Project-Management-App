@@ -80,11 +80,7 @@ export default function Profile() {
 
             </div>
 
-            <button className="mt-6 bg-indigo-500 hover:bg-indigo-600 transition px-6 py-3 rounded-2xl">
-
-              Edit Profile
-
-            </button>
+           
 
           </div>
 
