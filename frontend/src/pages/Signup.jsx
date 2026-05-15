@@ -14,7 +14,7 @@ export default function Signup() {
     try {
 
       await axios.post(
-        "https://project-management-app-jtoh.onrender.com/api/auth/signup",
+        "",
 
         {
           name,
