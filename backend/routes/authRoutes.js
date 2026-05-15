@@ -4,7 +4,13 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/User");
 
+const protect = require("../middleware/authMiddleware");
+
 const router = express.Router();
+
+
+
+// REGISTER
 
 router.post("/register", async (req, res) => {
 
@@ -12,7 +18,9 @@ router.post("/register", async (req, res) => {
 
     const { name, email, password, role } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({
+      email
+    });
 
     if (existingUser) {
 
@@ -27,7 +35,7 @@ router.post("/register", async (req, res) => {
       10
     );
 
-    const user = await User.create({
+    await User.create({
       name,
       email,
       password: hashedPassword,
@@ -48,18 +56,19 @@ router.post("/register", async (req, res) => {
 
 });
 
+
+
+// LOGIN
+
 router.post("/login", async (req, res) => {
 
   try {
 
     const { email, password } = req.body;
 
-    console.log("EMAIL:", email);
-    console.log("PASSWORD:", password);
-
-    const user = await User.findOne({ email });
-
-    console.log("USER:", user);
+    const user = await User.findOne({
+      email
+    });
 
     if (!user) {
 
@@ -73,8 +82,6 @@ router.post("/login", async (req, res) => {
       password,
       user.password
     );
-
-    console.log("MATCH:", isMatch);
 
     if (!isMatch) {
 
@@ -95,13 +102,38 @@ router.post("/login", async (req, res) => {
       }
     );
 
-    const protect = require("../middleware/authMiddleware");
+    res.json({
+
+      token,
+
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      }
+
+    });
+
+  } catch (err) {
+
+    res.status(500).json({
+      message: err.message,
+    });
+
+  }
+
+});
+
+
+
+// PROFILE
 
 router.get(
   "/profile",
   protect,
 
-  async (req,res) => {
+  async (req, res) => {
 
     try {
 
@@ -111,10 +143,10 @@ router.get(
 
       res.json(user);
 
-    } catch(err){
+    } catch (err) {
 
       res.status(500).json({
-        message:err.message
+        message: err.message,
       });
 
     }
@@ -122,27 +154,6 @@ router.get(
   }
 );
 
-    res.json({
-  token,
-  role:user.role,
-  user:{
-    id:user._id,
-    name:user.name,
-    email:user.email,
-    role:user.role,
-  }
-});
 
-  } catch (err) {
-
-    console.log(err);
-
-    res.status(500).json({
-      message: err.message,
-    });
-
-  }
-
-});
 
 module.exports = router;

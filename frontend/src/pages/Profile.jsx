@@ -97,7 +97,7 @@ export default function Profile() {
               </span>
 
               <span className="font-bold">
-                {Math.floor(Math.random()*30)}
+                0
               </span>
 
             </div>
@@ -109,7 +109,7 @@ export default function Profile() {
               </span>
 
               <span className="font-bold">
-                {Math.floor(Math.random()*100)}%
+                0%
               </span>
 
             </div>
@@ -121,7 +121,7 @@ export default function Profile() {
               </span>
 
               <span className="font-bold">
-                {Math.floor(Math.random()*10)}
+                0
               </span>
 
             </div>
